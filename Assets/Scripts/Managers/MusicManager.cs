@@ -20,7 +20,7 @@ public class MusicManager : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
 
-        //UpdateVolume(Settings.Instance.musicVolume);
+        UpdateVolume(Settings.Instance.musicVolume);
     }
 
     public void UpdateVolume(float value)
@@ -28,9 +28,9 @@ public class MusicManager : MonoBehaviour
         musicVolume = value;
 
         audioSource.volume = musicVolume;
-        //Settings.Instance.musicVolume = musicVolume;
+        Settings.Instance.musicVolume = musicVolume;
 
-        //Settings.Save();
+        Settings.Save();
     }
 
     private void OnEnable()
