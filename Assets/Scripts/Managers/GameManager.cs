@@ -15,14 +15,12 @@ public class GameManager : MonoBehaviour
     //[SerializeField] private DialogueManager dialogueManager;
     [SerializeField] private SFXManager sfxManager;
     [SerializeField] private MusicManager musicManager;
-    [SerializeField] private CurrentProgressManager currentProgressManager;
 
     #region UI
 
     [SerializeField] private MainMenuUI mainMenu;
     [SerializeField] private PauseUI pauseMenu;
 
-    [SerializeField] private CountersUI countersUI;
     //[SerializeField] private HeatUI heatUI;
 
     #endregion
@@ -48,18 +46,14 @@ public class GameManager : MonoBehaviour
             //Destroy(dialogueManager.gameObject);
             Destroy(sfxManager.gameObject);
             Destroy(musicManager.gameObject);
-            Destroy(currentProgressManager.gameObject);
 
             Destroy(mainMenu.gameObject);
             Destroy(pauseMenu.gameObject);
-            Destroy(countersUI.gameObject);
             //Destroy(heatUI.gameObject);
         }
         else
         {
             instance = this;
-
-            currentProgressManager.ResetCounters();
 
             // TODO: GET PROGRESS FROM PLAYFAB
         }
@@ -90,13 +84,8 @@ public class GameManager : MonoBehaviour
 
             pauseMenu.gameObject.SetActive(true);
 
-            countersUI.gameObject.SetActive(true);
-
             //heatUI.gameObject.SetActive(true);
             //healthUI.Activate();
-
-            currentProgressManager.ResetCounters();
-            currentProgressManager.gameObject.SetActive(true);
         }
         else
         {
@@ -105,9 +94,6 @@ public class GameManager : MonoBehaviour
 
             pauseMenu.gameObject.SetActive(false);
 
-            currentProgressManager.gameObject.SetActive(false);
-
-            countersUI.gameObject.SetActive(false);
             //heatUI.gameObject.SetActive(false);
         }
 
@@ -170,16 +156,6 @@ public class GameManager : MonoBehaviour
         return levelLoader;
     }
 
-    public CurrentProgressManager GetCurrentProgressManager()
-    {
-        return currentProgressManager;
-    }
-
-    public CountersUI GetCountersUI()
-    {
-        return countersUI;
-    }
-
     /*
 
     public CinemachineShake GetCinemachineShake()
@@ -191,8 +167,6 @@ public class GameManager : MonoBehaviour
     {
         return dialogueManager;
     }
-
-
 
     public HealthUI GetHeatUI()
     {
