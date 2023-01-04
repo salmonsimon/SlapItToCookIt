@@ -62,11 +62,7 @@ public class GameManager : MonoBehaviour
 
             currentProgressManager.ResetCounters();
 
-            // TODO: GET SETTINGS FROM PLAYFAB
-            //ProgressManager.Instance.Reset();
-
-            //Settings.Load();
-            //Settings.Instance.Deserialize();
+            // TODO: GET PROGRESS FROM PLAYFAB
         }
     }
 

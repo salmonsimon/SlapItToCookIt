@@ -46,8 +46,8 @@ public class PauseUI : MonoBehaviour
 
     public void SetAudioSlidersVolumesPauseMenu()
     {
-        //musicVolumeSlider.value = Settings.Instance.musicVolume;
-        //sfxVolumeSlider.value = Settings.Instance.SFXVolume;
+        musicVolumeSlider.value = Settings.Instance.musicVolume;
+        sfxVolumeSlider.value = Settings.Instance.SFXVolume;
     }
 
     public void ToMainMenu()
