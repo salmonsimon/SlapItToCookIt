@@ -7,12 +7,23 @@ public class CountersUI : MonoBehaviour
 {
     private Animator animator;
 
+    [SerializeField] private SlapManager slapManager;
     [SerializeField] private Text slapsText;
     [SerializeField] private Text timePlayedText;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+    }
+
+    private void OnEnable()
+    {
+        slapManager.OnCountersChange += UpdateCounters;
+    }
+
+    private void OnDisable()
+    {
+        slapManager.OnCountersChange -= UpdateCounters;
     }
 
     private void Start()
@@ -22,15 +33,15 @@ public class CountersUI : MonoBehaviour
 
     private void Update()
     {
-        timePlayedText.text = GameManager.instance.GetCurrentProgressManager().ShowCurrentTimePlayed();
+        timePlayedText.text = slapManager.ShowCurrentTimePlayed();
     }
 
     public void UpdateCounters()
     {
-        int currentSlapsCount = GameManager.instance.GetCurrentProgressManager().GetCurrentSlapCount();
+        int currentSlapsCount = slapManager.GetCurrentSlapCount();
 
         slapsText.text = currentSlapsCount.ToString("#,##0");
-        timePlayedText.text = GameManager.instance.GetCurrentProgressManager().ShowCurrentTimePlayed();
+        timePlayedText.text = slapManager.ShowCurrentTimePlayed();
     }
 
     public void ShowCounters(bool value)

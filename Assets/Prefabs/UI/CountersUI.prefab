@@ -645,5 +645,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6480b1688c65b9e4b801ce98024d1651, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slapManager: {fileID: 0}
   slapsText: {fileID: 2601314806496827325}
   timePlayedText: {fileID: 2601314805495073852}

@@ -31,9 +31,6 @@ public class MainMenuUI : MonoBehaviour
     {
         GameManager.instance.SetIsOnMainMenu(false);
 
-        GameManager.instance.GetCurrentProgressManager().ResetCounters();
-        GameManager.instance.GetCountersUI().UpdateCounters();
-
         GameManager.instance.GetLevelLoader().LoadLevel(Config.MAIN_SCENE_NAME, Config.CROSSFADE_TRANSITION);
     }
 

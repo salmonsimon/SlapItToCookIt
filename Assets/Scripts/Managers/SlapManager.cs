@@ -2,11 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static Utils;
 
 public class SlapManager : MonoBehaviour
 {
-    private CurrentProgressManager currentProgressManager;
 
+    [Header("Progress Counters")]
+    [SerializeField] private float timePlayed = 0f;
+    [SerializeField] private int slapCount = 0;
+
+    [Header("Object References")]
     [SerializeField] private Button slapButton;
     [SerializeField] private Text temperatureText;
     [SerializeField] private Image thermometerFillerImage;
@@ -18,17 +23,19 @@ public class SlapManager : MonoBehaviour
     private float currentTemperature = 0f;
     private float goalTemperature = 60f;
 
-    private bool reachedGoalTemperature = false;
-
     private float temperatureIncreaseMagnitude = 1f;
     private float temperatureIncreaseMultiplier = 1f;
 
     private float temperatureLossMagnitude = .5f;
 
+    private bool reachedGoalTemperature = false;
+    public bool ReachedGoalTemperature { get { return reachedGoalTemperature; } set { reachedGoalTemperature = value; } }
+
+    public delegate void OnCountersChangeDelegate();
+    public event OnCountersChangeDelegate OnCountersChange;
+
     private void Start()
     {
-        currentProgressManager = GameManager.instance.GetCurrentProgressManager();
-
         fillerWidth = thermometerFillerImage.rectTransform.rect.width;
 
         UpdateTemperatureUI();
@@ -36,7 +43,7 @@ public class SlapManager : MonoBehaviour
 
     private void Update()
     {
-        if (!reachedGoalTemperature)
+        if (!ReachedGoalTemperature)
         {
             if (currentTemperature > 0)
             {
@@ -47,6 +54,8 @@ public class SlapManager : MonoBehaviour
             }
 
             UpdateTemperatureUI();
+
+            timePlayed += Time.deltaTime;
         }
     }
 
@@ -65,7 +74,7 @@ public class SlapManager : MonoBehaviour
 
         GameManager.instance.GetSFXManager().PlayRandomSlapClip();
 
-        currentProgressManager.IncreaseSlapCount(slaps);
+        IncreaseSlapCount(slaps);
 
         float temperatureIncrease = slaps * temperatureIncreaseMagnitude * temperatureIncreaseMultiplier;
 
@@ -78,13 +87,37 @@ public class SlapManager : MonoBehaviour
     {
         if (currentTemperature > goalTemperature)
         {
-            GameManager.instance.GetCurrentProgressManager().FinishedSlapping = true;
-
-            reachedGoalTemperature = true;
+            ReachedGoalTemperature = true;
             temperatureText.text = goalTemperature.ToString() + "°C";
+            thermometerFillerImage.rectTransform.sizeDelta = new Vector2(fillerWidth, fillerMaxHeight);
 
             slapButton.gameObject.SetActive(false);
             GameManager.instance.GetSFXManager().PlaySound(Config.OVEN_SFX);
         }
+    }
+
+    private void IncreaseSlapCount(int value)
+    {
+        slapCount += value;
+
+        OnCountersChange();
+    }
+
+    public void ResetCounters()
+    {
+        timePlayed = 0f;
+        slapCount = 0;
+
+        OnCountersChange();
+    }
+
+    public int GetCurrentSlapCount()
+    {
+        return slapCount;
+    }
+
+    public string ShowCurrentTimePlayed()
+    {
+        return FloatToTimeFormat(timePlayed);
     }
 }
