@@ -19,11 +19,10 @@ public class GameManager : MonoBehaviour
 
     #region UI
 
-    [SerializeField] private GameObject mainMenu;
-
+    [SerializeField] private MainMenuUI mainMenu;
     [SerializeField] private PauseUI pauseMenu;
 
-    //[SerializeField] private CountersUI countersUI;
+    [SerializeField] private CountersUI countersUI;
     //[SerializeField] private HeatUI heatUI;
 
     #endregion
@@ -53,7 +52,7 @@ public class GameManager : MonoBehaviour
 
             Destroy(mainMenu.gameObject);
             Destroy(pauseMenu.gameObject);
-            //Destroy(countersUI.gameObject);
+            Destroy(countersUI.gameObject);
             //Destroy(heatUI.gameObject);
         }
         else
@@ -87,11 +86,11 @@ public class GameManager : MonoBehaviour
     {
         if (!isOnMainMenu)
         {
-            mainMenu.SetActive(false);
+            mainMenu.gameObject.SetActive(false);
 
             pauseMenu.gameObject.SetActive(true);
 
-            //countersUI.gameObject.SetActive(true);
+            countersUI.gameObject.SetActive(true);
 
             //heatUI.gameObject.SetActive(true);
             //healthUI.Activate();
@@ -101,13 +100,14 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            mainMenu.SetActive(true);
+            mainMenu.ResetMainMenu();
+            mainMenu.gameObject.SetActive(true);
 
             pauseMenu.gameObject.SetActive(false);
 
             currentProgressManager.gameObject.SetActive(false);
 
-            //countersUI.gameObject.SetActive(false);
+            countersUI.gameObject.SetActive(false);
             //heatUI.gameObject.SetActive(false);
         }
 
@@ -118,9 +118,10 @@ public class GameManager : MonoBehaviour
     {
         //dialogueManager.ClearDialogues();
 
-        pauseMenu.SetGamePaused(false);
+        pauseMenu.ResumeGame();
+        
 
-        isOnMainMenu = true;
+        SetIsOnMainMenu(true);
 
         levelLoader.LoadLevel(Config.MAIN_MENU_SCENE_NAME, Config.CROSSFADE_TRANSITION);
 
@@ -174,6 +175,11 @@ public class GameManager : MonoBehaviour
         return currentProgressManager;
     }
 
+    public CountersUI GetCountersUI()
+    {
+        return countersUI;
+    }
+
     /*
 
     public CinemachineShake GetCinemachineShake()
@@ -186,10 +192,7 @@ public class GameManager : MonoBehaviour
         return dialogueManager;
     }
 
-    public CountersUI GetCountersUI()
-    {
-        return countersUI;
-    }
+
 
     public HealthUI GetHeatUI()
     {

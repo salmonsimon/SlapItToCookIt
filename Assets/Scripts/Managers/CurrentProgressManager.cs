@@ -17,7 +17,7 @@ public class CurrentProgressManager : MonoBehaviour
     public void IncreaseSlapCount()
     {
         slapCount++;
-        //GameManager.instance.GetCountersUI().UpdateCounters();
+        GameManager.instance.GetCountersUI().UpdateCounters();
     }
 
     public void ResetCounters()
@@ -25,7 +25,7 @@ public class CurrentProgressManager : MonoBehaviour
         timePlayed = 0f;
         slapCount = 0;
 
-        //GameManager.instance.GetCountersUI().UpdateCounters();
+        GameManager.instance.GetCountersUI().UpdateCounters();
     }
 
     public int GetCurrentSlapCount()
