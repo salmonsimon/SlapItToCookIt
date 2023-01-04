@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3069713096442540405}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.017231941, y: -0.04029572, z: 0.0001861155}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -44,7 +44,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -143,7 +143,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clickSFX: {fileID: 8300000, guid: 224b4b95d5babf24f9ffc709d72f6d5b, type: 3}
   pauseSFX: {fileID: 8300000, guid: 9d35dfbe7ac41274f94a0d495315499a, type: 3}
-  stageClearedSFX: {fileID: 0}
+  stageClearedSFX: {fileID: 8300000, guid: 236e92d417d88df4189433f86996684e, type: 3}
+  ovenSFX: {fileID: 8300000, guid: 0bff8131c115c5d449dffa1e72d1adea, type: 3}
   slapClips:
   - {fileID: 8300000, guid: 19d2817240395d949938ed781d84e44c, type: 3}
   - {fileID: 8300000, guid: 02f42502f9add9a49901af64d365ef35, type: 3}
@@ -152,4 +153,25 @@ MonoBehaviour:
   - {fileID: 8300000, guid: aff059e223d5eca4fab8d3a662f15473, type: 3}
   - {fileID: 8300000, guid: 771da4958b9bb4a4c91b5c9f40ce4fed, type: 3}
   fireEffectClips:
+  - {fileID: 8300000, guid: 7ae5938c19f94c64894f148f53cbf8cc, type: 3}
+  - {fileID: 8300000, guid: 15dc463fb04ca3a4a84df99d3e8da04a, type: 3}
+  - {fileID: 8300000, guid: 01bdd8faf235c494db0e2a072cd4b00a, type: 3}
+  - {fileID: 8300000, guid: 878cbc9b34a22e343a2caaea1ca762d2, type: 3}
+  - {fileID: 8300000, guid: 1a778cebd11ea8c4c96f9dc223da0062, type: 3}
+  - {fileID: 8300000, guid: 7b0f5dab8d2275546bc4794c5661e58c, type: 3}
+  - {fileID: 8300000, guid: 9c55c491e5e6c314da564b38e6850c35, type: 3}
+  - {fileID: 8300000, guid: cd68b515a7f73fd45ab4805aacd86adf, type: 3}
+  - {fileID: 8300000, guid: 2123a669e5f566f42ae27663e6655deb, type: 3}
+  - {fileID: 8300000, guid: 9301f9c55e1c6854a92d23150678beec, type: 3}
+  - {fileID: 8300000, guid: 0aa5517b195e4de4d972bd9e8a05c954, type: 3}
+  - {fileID: 8300000, guid: 55bfbde39e4c2d349b66c679118c79b9, type: 3}
+  - {fileID: 8300000, guid: ed782bd76ec8e2d4dadd3b3c94f51b06, type: 3}
+  - {fileID: 8300000, guid: 0aded13475fba59468449dd73a89915a, type: 3}
   - {fileID: 8300000, guid: 401ff1553190c014ca0ac1d4f411944a, type: 3}
+  congratulationsClips:
+  - {fileID: 8300000, guid: 330a69a36b7630c43949215464600bd2, type: 3}
+  - {fileID: 8300000, guid: 78268ea229dfae04c97ddd72c21597b2, type: 3}
+  - {fileID: 8300000, guid: e6bfec47893cd4b4b889294ddce6b044, type: 3}
+  - {fileID: 8300000, guid: bee3ecb59915e934f8497f6e05e7ca00, type: 3}
+  - {fileID: 8300000, guid: 696000a365acace4bb3218df31ad3757, type: 3}
+  - {fileID: 8300000, guid: cae366902a7a85a4080de4fcdf62cf31, type: 3}
