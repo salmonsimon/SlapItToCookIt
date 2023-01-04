@@ -20,7 +20,9 @@ public class GameManager : MonoBehaviour
     #region UI
 
     [SerializeField] private GameObject mainMenu;
-    [SerializeField] private GameObject pauseMenu;
+
+    [SerializeField] private PauseUI pauseMenu;
+
     //[SerializeField] private CountersUI countersUI;
     //[SerializeField] private HeatUI heatUI;
 
@@ -79,10 +81,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!isGamePaused && !isOnMainMenu && Input.GetKeyDown(KeyCode.Escape))
-            PauseGame();
-        else if (isGamePaused && !isOnMainMenu && Input.GetKeyDown(KeyCode.Escape))
-            ResumeGame();
+        if (!pauseMenu.IsGamePaused && !isOnMainMenu && Input.GetKeyDown(KeyCode.Escape))
+            pauseMenu.PauseGame();
+        else if (pauseMenu.IsGamePaused && !isOnMainMenu && Input.GetKeyDown(KeyCode.Escape))
+            pauseMenu.ResumeGame();
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -90,6 +92,8 @@ public class GameManager : MonoBehaviour
         if (!isOnMainMenu)
         {
             mainMenu.SetActive(false);
+
+            pauseMenu.gameObject.SetActive(true);
 
             //countersUI.gameObject.SetActive(true);
 
@@ -103,7 +107,8 @@ public class GameManager : MonoBehaviour
         {
             mainMenu.SetActive(true);
 
-            pauseMenu.SetActive(false);
+            pauseMenu.gameObject.SetActive(false);
+
             currentProgressManager.gameObject.SetActive(false);
 
             //countersUI.gameObject.SetActive(false);
@@ -117,38 +122,16 @@ public class GameManager : MonoBehaviour
     {
         //dialogueManager.ClearDialogues();
 
-        SetGamePaused(false);
+        pauseMenu.SetGamePaused(false);
 
         isOnMainMenu = true;
 
         levelLoader.LoadLevel(Config.MAIN_MENU_SCENE_NAME, Config.CROSSFADE_TRANSITION);
 
-        pauseMenu.SetActive(false);
-    }
-
-    public void PauseGame()
-    {
-        GetSFXManager().PlaySound(Config.PAUSE_SFX);
-        SetGamePaused(true);
-
-        pauseMenu.SetActive(true);
-        pauseMenu.transform.Find("Pause Panel").gameObject.SetActive(true);
-    }
-
-    public void ResumeGame()
-    {
-        SetGamePaused(false);
-
-        pauseMenu.SetActive(false);
-        pauseMenu.transform.Find("Settings Panel").gameObject.SetActive(false);
+        pauseMenu.gameObject.SetActive(false);
     }
 
     #region Getters and Setters
-
-    public bool IsGamePaused()
-    {
-        return isGamePaused;
-    }
 
     public bool IsOnMainMenu()
     {
@@ -170,14 +153,9 @@ public class GameManager : MonoBehaviour
         isTeleporting = value;
     }
 
-    public void SetGamePaused(bool value)
+    public PauseUI GetPauseUI()
     {
-        isGamePaused = value;
-
-        if (value)
-            Time.timeScale = 0f;
-        else
-            Time.timeScale = 1f;
+        return pauseMenu;
     }
 
     public SFXManager GetSFXManager()
@@ -212,8 +190,6 @@ public class GameManager : MonoBehaviour
         return dialogueManager;
     }
 
-    
-
     public CountersUI GetCountersUI()
     {
         return countersUI;
@@ -228,30 +204,4 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    #region Utils (have to reattach to other script later)
-
-    /*
-
-    public void SetAudioSlidersVolumesPauseMenu()
-    {
-        Slider musicVolumeSlider = null;
-        Slider sfxVolumeSlider = null;
-
-        if (currentProgressManager.CurrentFightingRoute == FightingRoute.None)
-        {
-            musicVolumeSlider = GameObject.Find("Pause Menu UI/Settings Panel/Music/Music Slider").GetComponent<Slider>();
-            sfxVolumeSlider = GameObject.Find("Pause Menu UI/Settings Panel/SFX/SFX Slider").GetComponent<Slider>();
-        }
-        else
-        {
-            musicVolumeSlider = GameObject.Find("Pause Menu UI - Fighting Route/Settings Panel/Music/Music Slider").GetComponent<Slider>();
-            sfxVolumeSlider = GameObject.Find("Pause Menu UI - Fighting Route/Settings Panel/SFX/SFX Slider").GetComponent<Slider>();
-        }
-
-        musicVolumeSlider.value = Settings.Instance.musicVolume;
-        sfxVolumeSlider.value = Settings.Instance.SFXVolume;
-    }
-    */
-
-    #endregion
 }
