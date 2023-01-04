@@ -11,6 +11,11 @@ public class LevelLoader : MonoBehaviour
     private float endTransitionDuration = Config.END_TRANSITION_DURATION;
     private string lastTransitionType;
 
+    private void Start()
+    {
+        crossFade.gameObject.SetActive(false);
+    }
+
     public void LoadLevel(string sceneName, string transitionType)
     {
         StartCoroutine(LoadLevelAndAnimate(sceneName, transitionType));
@@ -64,11 +69,6 @@ public class LevelLoader : MonoBehaviour
     public IEnumerator CrossfadeEnd()
     {
         crossFade.SetTrigger(Config.CROSSFADE_END_TRIGGER);
-
-        if (GameManager.instance.IsOnMainMenu())
-        {
-            //GameManager.instance.GetMainMenuUI().ResetMainMenu();
-        }
 
         yield return new WaitForSeconds(endTransitionDuration);
 

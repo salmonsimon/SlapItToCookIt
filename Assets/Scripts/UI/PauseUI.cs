@@ -5,15 +5,28 @@ using UnityEngine.UI;
 
 public class PauseUI : MonoBehaviour
 {
+
+    #region Logic Variables
+
     private bool isGamePaused = false;
     public bool IsGamePaused { get { return isGamePaused; } }
+
+    #endregion
+
+    #region References
 
     [SerializeField] Button pauseButton;
     [SerializeField] GameObject pausePanel;
     [SerializeField] GameObject settingsPanel;
 
+    #endregion
+
+    #region Audio Sliders References
+
     [SerializeField] Slider musicVolumeSlider;
     [SerializeField] Slider sfxVolumeSlider;
+
+    #endregion
 
     public void PauseGame()
     {
@@ -44,15 +57,17 @@ public class PauseUI : MonoBehaviour
             Time.timeScale = 1f;
     }
 
+    public void ToMainMenu()
+    {
+        GameManager.instance.ToMainMenu();
+    }
+
+    #region Audio
+
     public void SetAudioSlidersVolumesPauseMenu()
     {
         musicVolumeSlider.value = Settings.Instance.musicVolume;
         sfxVolumeSlider.value = Settings.Instance.SFXVolume;
-    }
-
-    public void ToMainMenu()
-    {
-        GameManager.instance.ToMainMenu();
     }
 
     public void UpdateMusicVolume(float value)
@@ -64,4 +79,6 @@ public class PauseUI : MonoBehaviour
     {
         GameManager.instance.GetSFXManager().UpdateVolume(value);
     }
+
+    #endregion
 }
