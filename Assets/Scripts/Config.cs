@@ -39,6 +39,7 @@ public class Config
     public const string CLICK_SFX = "Click";
     public const string PAUSE_SFX = "Pause";
     public const string STAGE_CLEARED_SFX = "Stage Cleared";
+    public const string OVEN_SFX = "Oven";
 
     #endregion
 

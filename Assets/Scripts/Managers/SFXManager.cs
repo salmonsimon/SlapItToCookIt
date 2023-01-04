@@ -13,10 +13,14 @@ public class SFXManager : MonoBehaviour
     [SerializeField] private AudioClip clickSFX;
     [SerializeField] private AudioClip pauseSFX;
     [SerializeField] private AudioClip stageClearedSFX;
+    [SerializeField] private AudioClip ovenSFX;
 
     [Header("Slap Sounds")]
     [SerializeField] private List<AudioClip> slapClips = new List<AudioClip>();
     [SerializeField] private List<AudioClip> fireEffectClips = new List<AudioClip>();
+
+    [Header("Congratulations Sounds")]
+    [SerializeField] private List<AudioClip> congratulationsClips = new List<AudioClip>();
 
     private void Awake()
     {
@@ -50,6 +54,10 @@ public class SFXManager : MonoBehaviour
             case Config.STAGE_CLEARED_SFX:
                 audioSource.PlayOneShot(stageClearedSFX);
                 break;
+
+            case Config.OVEN_SFX:
+                audioSource.PlayOneShot(ovenSFX);
+                break;
         }
     }
 
@@ -79,6 +87,11 @@ public class SFXManager : MonoBehaviour
     }
 
     #endregion
+
+    public void PlayRandomCongratulationsSound()
+    {
+        PlayRandomAudioClip(congratulationsClips);
+    }
 
     public float GetSFXVolume()
     {
