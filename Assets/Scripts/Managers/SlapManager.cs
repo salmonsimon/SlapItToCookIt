@@ -16,29 +16,50 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private Text temperatureText;
     [SerializeField] private Image thermometerFillerImage;
 
-    private float fillerWidth = 0;
-    private float fillerMaxHeight = 1225f;
-    private float fillerMinHeight = 180f;
+    #region Logic Variables
+
+    private float temperatureIncreaseMultiplier = 1f;
+    private int handsCount = 1;
 
     private float currentTemperature = 0f;
     private float goalTemperature = 60f;
 
-    private float temperatureIncreaseMagnitude = 1f;
-    private float temperatureIncreaseMultiplier = 1f;
-
-    private float temperatureLossMagnitude = .5f;
-
     private bool reachedGoalTemperature = false;
     public bool ReachedGoalTemperature { get { return reachedGoalTemperature; } set { reachedGoalTemperature = value; } }
 
+
+    #endregion
+
+    #region Parameters
+
+    private float temperatureIncreaseMagnitude = 1f;
+    private float temperatureLossMagnitude = .5f;
+
+    #endregion
+
+    #region Temperature UI
+
+    private float fillerWidth = 0;
+    private float fillerMaxHeight = 1225f;
+    private float fillerMinHeight = 180f;
+
+    #endregion
+
+    #region Events
+
     public delegate void OnCountersChangeDelegate();
     public event OnCountersChangeDelegate OnCountersChange;
+
+    #endregion
 
     private void Start()
     {
         fillerWidth = thermometerFillerImage.rectTransform.rect.width;
 
         UpdateTemperatureUI();
+
+        SetUpgrades();
+        SpawnHands();
     }
 
     private void Update()
@@ -69,14 +90,11 @@ public class SlapManager : MonoBehaviour
 
     public void OnSlap()
     {
-        //TODO: THIS ONE WILL DEPEND ON HOW MANY HANDS WE HAVE
-        int slaps = 1;
-
         GameManager.instance.GetSFXManager().PlayRandomSlapClip();
 
-        IncreaseSlapCount(slaps);
+        IncreaseSlapCount(handsCount);
 
-        float temperatureIncrease = slaps * temperatureIncreaseMagnitude * temperatureIncreaseMultiplier;
+        float temperatureIncrease = handsCount * temperatureIncreaseMagnitude * temperatureIncreaseMultiplier;
 
         currentTemperature += temperatureIncrease;
 
@@ -94,6 +112,20 @@ public class SlapManager : MonoBehaviour
             slapButton.gameObject.SetActive(false);
             GameManager.instance.GetSFXManager().PlaySound(Config.OVEN_SFX);
         }
+    }
+
+    private void SetUpgrades()
+    {
+        handsCount = GameManager.instance.GetProgressManager().HandsCount;
+        temperatureIncreaseMultiplier = GameManager.instance.GetProgressManager().TemperatureIncreaseMultiplier;
+
+        if (handsCount > 3) handsCount = 3;
+        if (temperatureIncreaseMultiplier > 2f) temperatureIncreaseMultiplier = 2f;
+    }
+
+    private void SpawnHands()
+    {
+
     }
 
     private void IncreaseSlapCount(int value)
