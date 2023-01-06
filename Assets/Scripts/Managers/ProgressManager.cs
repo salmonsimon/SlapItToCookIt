@@ -43,6 +43,57 @@ public class ProgressManager : MonoBehaviour
 
     #endregion
 
+    #region Score Record
+
+    [Header("Score Record")]
+    [SerializeField] private float recordTime = -1f;
+    public float RecordTime { get { return recordTime; } private set { recordTime = value; } }
+
+    [SerializeField] private int recordSlaps = -1;
+    public int RecordSlaps { get { return recordSlaps; } private set { recordSlaps = value; } }
+
+    #endregion
+
+    private void Awake()
+    {
+        UpdateCountersAPICall();
+        UpdateRecordsAPICall();
+    }
+
+    public bool CheckIfNewRecord(float newTimePlayed, int newSlapCount)
+    {
+        bool newRecord = false;
+
+        if (recordTime == -1 || recordSlaps == -1)
+        {
+            WriteNewRecord(newTimePlayed, newSlapCount);
+
+            newRecord = true;
+        }
+        else if (newTimePlayed < recordTime)
+        {
+            WriteNewRecord(newTimePlayed, newSlapCount);
+
+            newRecord = true;
+        }
+
+        return newRecord;
+    }
+
+    private void WriteNewRecord(float newTimePlayed, int newSlapCount)
+    {
+        // TODO: DO API CALL TO WRITE IN SERVER
+        RecordTime = newTimePlayed;
+        RecordSlaps = newSlapCount;
+    }
+
+    public void EarnCoins(int amountEarned)
+    {
+        Coins += amountEarned;
+
+        WriteCoinsAmountAPICall();
+    }
+
     public void PayCoins(int amountPayed)
     {
         Coins -= amountPayed;
@@ -165,6 +216,12 @@ public class ProgressManager : MonoBehaviour
     {
         // TODO: DO ALL THE API CALLS FROM HERE
         // TO GET COINS / RUBIES / HANDS COUNT / TEMPERATURE MULTIPLIER
+    }
+
+    public void UpdateRecordsAPICall()
+    {
+        // TODO: READ FROM SERVER OUR CURRENT RECORD
+        // TO GET RECORD TIME AND RECORD SLAPS
     }
 
     public float GetServerTimeAPICall()
