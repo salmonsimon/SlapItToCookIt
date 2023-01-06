@@ -16,6 +16,13 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private Text temperatureText;
     [SerializeField] private Image thermometerFillerImage;
 
+    [Header("Stage Cleared References")]
+    [SerializeField] private GameObject stageClearedPanel;
+    [SerializeField] private Text timePlayedText;
+    [SerializeField] private Text slapCountText;
+    [SerializeField] private Text newRecordText;
+    [SerializeField] private Text coinsEarnedText;
+
     #region Logic Variables
 
     private float temperatureIncreaseMultiplier = 1f;
@@ -111,11 +118,47 @@ public class SlapManager : MonoBehaviour
 
             slapButton.gameObject.SetActive(false);
             GameManager.instance.GetSFXManager().PlaySound(Config.OVEN_SFX);
+
+            StageCleared();
         }
+    }
+
+    private void StageCleared()
+    {
+        StartCoroutine(PlayStageClearedSounds());
+
+        slapCountText.text = slapCount.ToString("#,##0");
+        timePlayedText.text = ShowCurrentTimePlayed();
+
+        if (GameManager.instance.GetProgressManager().CheckIfNewRecord(timePlayed, slapCount))
+            newRecordText.gameObject.SetActive(true);
+
+        int coinsEarned = CalculateCoinsEarned();
+        GameManager.instance.GetProgressManager().EarnCoins(coinsEarned);
+
+        coinsEarnedText.text = coinsEarned.ToString();
+
+        stageClearedPanel.gameObject.SetActive(true);
+    }
+
+    private int CalculateCoinsEarned()
+    {
+        return 50;
+    }
+
+    private IEnumerator PlayStageClearedSounds()
+    {
+        GameManager.instance.GetSFXManager().PlaySound(Config.STAGE_CLEARED_SFX);
+
+        yield return new WaitForSeconds(3.5f);
+
+        GameManager.instance.GetSFXManager().PlayRandomCongratulationsSound();
     }
 
     private void SetUpgrades()
     {
+        GameManager.instance.GetProgressManager().UpdateCountersAPICall();
+
         handsCount = GameManager.instance.GetProgressManager().HandsCount;
         temperatureIncreaseMultiplier = GameManager.instance.GetProgressManager().TemperatureIncreaseMultiplier;
 
@@ -151,5 +194,17 @@ public class SlapManager : MonoBehaviour
     public string ShowCurrentTimePlayed()
     {
         return FloatToTimeFormat(timePlayed);
+    }
+
+    public void PlayGame()
+    {
+        GameManager.instance.SetIsOnMainMenu(false);
+
+        GameManager.instance.GetLevelLoader().LoadLevel(Config.MAIN_SCENE_NAME, Config.CROSSFADE_TRANSITION);
+    }
+
+    public void ToMainMenu()
+    {
+        GameManager.instance.ToMainMenu();
     }
 }
