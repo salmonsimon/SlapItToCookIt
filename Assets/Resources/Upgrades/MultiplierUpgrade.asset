@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b01d3fbe77941bb4f8614e31badc942c, type: 3}
-  m_Name: TemperatureUpgrade
+  m_Name: MultiplierUpgrade
   m_EditorClassIdentifier: 
   upgradeInfo:
   - coinPrice: 50

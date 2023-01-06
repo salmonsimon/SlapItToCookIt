@@ -32,12 +32,20 @@ public class Config
 
     #endregion
 
+    #region Resource File Paths
+
+    public const string HAND_UPGRADES_FILE = "Upgrades/HandsUpgrade";
+    public const string MULTIPLIER_UPGRADES_FILE = "Upgrades/MultiplierUpgrade";
+
+    #endregion
+
     #region Audio
 
     #region SFX
 
     public const string CLICK_SFX = "Click";
     public const string PAUSE_SFX = "Pause";
+    public const string WRONG_SFX = "Wrong";
     public const string STAGE_CLEARED_SFX = "Stage Cleared";
     public const string OVEN_SFX = "Oven";
 

@@ -5,5 +5,5 @@ using UnityEngine;
 public class UpgradeTable : ScriptableObject
 {
     [SerializeField] private List<UpgradeInfo> upgradeInfo = new List<UpgradeInfo>();
-    public List<UpgradeInfo> Speakers { get { return upgradeInfo; } }
+    public List<UpgradeInfo> UpgradeInfo { get { return upgradeInfo; } }
 }

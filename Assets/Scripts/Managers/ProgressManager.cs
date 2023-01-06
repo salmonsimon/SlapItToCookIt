@@ -11,7 +11,10 @@ public class ProgressManager : MonoBehaviour
 
     [Header("Currency")]
     [SerializeField] private int coins = 0;
+    public int Coins { get { return coins; } private set { coins = value; } }
+
     [SerializeField] private int rubies = 100;
+    public int Rubies { get { return rubies; } private set { rubies = value; } }
 
     #endregion
 
@@ -22,51 +25,77 @@ public class ProgressManager : MonoBehaviour
     public int HandsCount { get { return handsCount; } private set { handsCount = value; } }
 
     [SerializeField] private float temperatureIncreaseMultiplier = 1.0f;
-    public float TemperatureIncreaseMultiplier { get { return temperatureIncreaseMultiplier; } }
+    public float TemperatureIncreaseMultiplier { get { return temperatureIncreaseMultiplier; } private set { temperatureIncreaseMultiplier = value; } }
 
     [Header("Upgrades - New Hands")]
     [SerializeField] private int handUpgradesDone = 0;
-    [SerializeField] private float newHandUpgradeRedeemTime = 0f;
+    public int HandUpgradesDone { get { return handUpgradesDone; } }
+
+    [SerializeField] private float newHandUpgradeRedeemTime = -1f;
+    public float NewHandUpgradeRedeemTime { get { return newHandUpgradeRedeemTime; } private set { newHandUpgradeRedeemTime = value; } }
 
     [Header("Upgrades - New Temperature")]
-    [SerializeField] private int temperatureUpgradesDone = 0;
-    [SerializeField] private float newTemperatureUpgradeRedeemTime = 0f;
+    [SerializeField] private int multiplierUpgradesDone = 0;
+    public int MultiplierUpgradesDone { get { return multiplierUpgradesDone; } }
+
+    [SerializeField] private float newMultiplierUpgradeRedeemTime = -1f;
+    public float NewMultiplierUpgradeRedeemTime { get { return newMultiplierUpgradeRedeemTime; } private set { newMultiplierUpgradeRedeemTime = value; } }
 
     #endregion
 
-    public delegate void OnProgressChangeDelegate();
-    public event OnProgressChangeDelegate OnProgressChange;
-
-    private void ShowCurrentHandUpgradeCostCoins()
+    public void PayCoins(int amountPayed)
     {
+        Coins -= amountPayed;
 
+        WriteCoinsAmountAPICall();
     }
 
-    private void ShowCurrentHandUpgradeCostRubies()
+    public void PayRubies(int amountPayed)
     {
+        Rubies -= amountPayed;
 
+        WriteCurrentRubiesAmountAPICall();
     }
 
-    private void BuyNewHandUpgradeCoins()
+    private void WriteCoinsAmountAPICall()
     {
-
+        // TODO: DO API CALL TO WRITE IN SERVER
     }
 
-    private void BuyNewHandUpgradeRubies()
+    private void WriteCurrentRubiesAmountAPICall()
     {
-
+        // TODO: DO API CALL TO WRITE IN SERVER
     }
 
-    private void ShowCurrentHandUpgradeFastForwardPrice()
+    public void RedeemNewHandUpgrade()
     {
+        HandsCount = GetHandUpgradeValue((HandUpgrade)handUpgradesDone);
+        handUpgradesDone++;
 
+        WriteHandsUpgradesAPICall();
     }
 
-    private void FastForwardCurrentHandUpgradeRedeem()
+    public void RedeemNewMultiplierUpgrade()
     {
+        TemperatureIncreaseMultiplier = GetTemperatureUpgradeValue((TemperatureUpgrade)MultiplierUpgradesDone);
+        multiplierUpgradesDone++;
 
+        WriteHandsUpgradesAPICall();
     }
 
+    private void WriteHandsUpgradesAPICall()
+    {
+        // TODO: DO API CALL TO WRITE IN SERVER
+        // handsCount , handUpgradesDone
+    }
+
+    private void WriteMultiplierUpgradesAPICall()
+    {
+        // TODO: DO API CALL TO WRITE IN SERVER
+        // temperatureIncreaseMultiplayer / multiplierUpgradesDone
+    }
+
+    /*
     private void RedeemNewHandUpgrade()
     {
         // TODO: Update hand redeem time from API
@@ -89,6 +118,7 @@ public class ProgressManager : MonoBehaviour
             Debug.Log("Processing hand upgrade");
         }
     }
+    
 
     private void RedeemNewTemperatureUpgrade()
     {
@@ -127,46 +157,56 @@ public class ProgressManager : MonoBehaviour
         return handUpgradeReady;
     }
 
+    */
+
     #region API Calls
 
-    private void GetHandsCountAPICall()
+    public void UpdateCountersAPICall()
     {
-
+        // TODO: DO ALL THE API CALLS FROM HERE
+        // TO GET COINS / RUBIES / HANDS COUNT / TEMPERATURE MULTIPLIER
     }
 
-    private void GetTemperatureMultiplierAPICall()
-    {
-
-    }
-
-    private float GetServerTimeAPICall()
+    public float GetServerTimeAPICall()
     {
         // TODO: CHANGE TIME.TIME TO BE GET FROM SERVER
         return Time.time;
     }
 
-    private float GetNewHandUpgradeRedeemTimeAPICall()
+    public void WriteNewHandUpgradeRedeemTimeAPICall(float delayInSeconds)
+    {
+        // TODO: WRITE NEW HAND UPGRADE REDEEM TIME IN SERVER
+        NewHandUpgradeRedeemTime = Time.time + delayInSeconds;
+    }
+
+    public float GetNewHandUpgradeRedeemTimeAPICall()
     {
         // TODO: CHANGE THIS TO BE GET FROM SERVER, IN SERVER IF NOT WAITING WILL BE SET TO -1
         return newHandUpgradeRedeemTime;
     }
 
-    private void ResetNewHandUpgradeRedeemTimeAPICall()
+    public void ResetNewHandUpgradeRedeemTimeAPICall()
     {
         // TODO: CHANGE THIS TO WRITE INTO THE SERVER
         newHandUpgradeRedeemTime = -1;
     }
 
-    private float GetNewTemperatureUpgradeRedeemTimeAPICall()
+    public void WriteNewMultiplierUpgradeRedeemTimeAPICall(float delayInSeconds)
     {
-        // TODO: CHANGE THIS TO BE GET FROM SERVER, IN SERVER IF NOT WAITING WILL BE SET TO -1
-        return newTemperatureUpgradeRedeemTime;
+        // TODO: WRITE NEW HAND UPGRADE REDEEM TIME IN SERVER
+        NewMultiplierUpgradeRedeemTime = Time.time + delayInSeconds;
     }
 
-    private void ResetNewTemperatureUpgradeRedeemTimeAPICall()
+    public float GetNewMultiplierUpgradeRedeemTimeAPICall()
+    {
+        // TODO: CHANGE THIS TO BE GET FROM SERVER, IN SERVER IF NOT WAITING WILL BE SET TO -1
+        return newMultiplierUpgradeRedeemTime;
+    }
+
+    public void ResetNewMultiplierUpgradeRedeemTimeAPICall()
     {
         // TODO: CHANGE THIS TO WRITE INTO THE SERVER
-        newTemperatureUpgradeRedeemTime = -1;
+        newMultiplierUpgradeRedeemTime = -1;
     }
 
     #endregion
