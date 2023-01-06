@@ -12,6 +12,7 @@ public class SFXManager : MonoBehaviour
     [Header("UI Sounds")]
     [SerializeField] private AudioClip clickSFX;
     [SerializeField] private AudioClip pauseSFX;
+    [SerializeField] private AudioClip wrongSFX;
     [SerializeField] private AudioClip stageClearedSFX;
     [SerializeField] private AudioClip ovenSFX;
 
@@ -49,6 +50,10 @@ public class SFXManager : MonoBehaviour
 
             case Config.PAUSE_SFX:
                 audioSource.PlayOneShot(pauseSFX);
+                break;
+
+            case Config.WRONG_SFX:
+                audioSource.PlayOneShot(wrongSFX);
                 break;
 
             case Config.STAGE_CLEARED_SFX:

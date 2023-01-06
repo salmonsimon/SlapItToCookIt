@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     #region GameObjects
 
     [SerializeField] private LevelLoader levelLoader;
+    [SerializeField] private ProgressManager progressManager;
     //[SerializeField] private CinemachineShake cinemachineShake;
     //[SerializeField] private DialogueManager dialogueManager;
     [SerializeField] private SFXManager sfxManager;
@@ -20,8 +21,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private MainMenuUI mainMenu;
     [SerializeField] private PauseUI pauseMenu;
-
-    //[SerializeField] private HeatUI heatUI;
 
     #endregion
 
@@ -42,6 +41,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
             Destroy(levelLoader.gameObject);
+            Destroy(progressManager.gameObject);
             //Destroy(cinemachineShake.gameObject);
             //Destroy(dialogueManager.gameObject);
             Destroy(sfxManager.gameObject);
@@ -49,13 +49,12 @@ public class GameManager : MonoBehaviour
 
             Destroy(mainMenu.gameObject);
             Destroy(pauseMenu.gameObject);
-            //Destroy(heatUI.gameObject);
         }
         else
         {
             instance = this;
 
-            // TODO: GET PROGRESS FROM PLAYFAB
+            // TODO: GET PROGRESS FROM PLAYFAB FOR PROGRESS MANAGER
         }
     }
 
@@ -83,9 +82,6 @@ public class GameManager : MonoBehaviour
             mainMenu.gameObject.SetActive(false);
 
             pauseMenu.gameObject.SetActive(true);
-
-            //heatUI.gameObject.SetActive(true);
-            //healthUI.Activate();
         }
         else
         {
@@ -93,8 +89,6 @@ public class GameManager : MonoBehaviour
             mainMenu.gameObject.SetActive(true);
 
             pauseMenu.gameObject.SetActive(false);
-
-            //heatUI.gameObject.SetActive(false);
         }
 
         levelLoader.FinishTransition();
@@ -156,6 +150,11 @@ public class GameManager : MonoBehaviour
         return levelLoader;
     }
 
+    public ProgressManager GetProgressManager()
+    {
+        return progressManager;
+    }
+
     /*
 
     public CinemachineShake GetCinemachineShake()
@@ -166,11 +165,6 @@ public class GameManager : MonoBehaviour
     public DialogueManager GetDialogueManager()
     {
         return dialogueManager;
-    }
-
-    public HealthUI GetHeatUI()
-    {
-        return heatUI;
     }
 
     */
