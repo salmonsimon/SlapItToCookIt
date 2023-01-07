@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     //[SerializeField] private DialogueManager dialogueManager;
     [SerializeField] private SFXManager sfxManager;
     [SerializeField] private MusicManager musicManager;
+    [SerializeField] private PlayfabManager playfabManager;
 
     #region UI
 
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
             //Destroy(dialogueManager.gameObject);
             Destroy(sfxManager.gameObject);
             Destroy(musicManager.gameObject);
+            Destroy(playfabManager.gameObject);
 
             Destroy(mainMenu.gameObject);
             Destroy(pauseMenu.gameObject);
@@ -53,8 +55,6 @@ public class GameManager : MonoBehaviour
         else
         {
             instance = this;
-
-            // TODO: GET PROGRESS FROM PLAYFAB FOR PROGRESS MANAGER
         }
     }
 
@@ -77,18 +77,21 @@ public class GameManager : MonoBehaviour
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (!isOnMainMenu)
-        {
-            mainMenu.gameObject.SetActive(false);
-
-            pauseMenu.gameObject.SetActive(true);
-        }
-        else
+        if (isOnMainMenu)
         {
             mainMenu.ResetMainMenu();
             mainMenu.gameObject.SetActive(true);
 
             pauseMenu.gameObject.SetActive(false);
+        }
+        else
+        {
+            if (scene.name == Config.LOGIN_SCENE_NAME)
+                pauseMenu.gameObject.SetActive(false);
+            else
+                pauseMenu.gameObject.SetActive(true);
+
+            mainMenu.gameObject.SetActive(false);
         }
 
         levelLoader.FinishTransition();
@@ -99,7 +102,6 @@ public class GameManager : MonoBehaviour
         //dialogueManager.ClearDialogues();
 
         pauseMenu.ResumeGame();
-        
 
         SetIsOnMainMenu(true);
 
@@ -153,6 +155,11 @@ public class GameManager : MonoBehaviour
     public ProgressManager GetProgressManager()
     {
         return progressManager;
+    }
+
+    public PlayfabManager GetPlayfabManager()
+    {
+        return playfabManager;
     }
 
     /*

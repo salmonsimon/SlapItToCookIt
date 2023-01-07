@@ -1,9 +1,27 @@
+using System.Collections.Generic;
+
 public class Config 
 {
     #region Scene Names
 
+    public const string LOGIN_SCENE_NAME = "Login";
     public const string MAIN_MENU_SCENE_NAME = "Main Menu";
     public const string MAIN_SCENE_NAME = "Main";
+
+    #endregion
+
+    #region API
+
+    public const string API_TITLE_ID = "F11D5";
+
+    public const string API_COINS_KEY = "Coins";
+    public const string API_RUBIES_KEY = "Rubies";
+
+    public const string API_HAND_UPGRADES_DONE_KEY = "Hand Upgrades Done";
+    public const string API_NEW_HAND_UPGRADE_REDEEM_TIME_KEY = "New Hand Upgrade Redeem Time";
+
+    public const string API_MULTIPLIER_UPGRADES_DONE_KEY = "Multiplier Upgrades Done";
+    public const string API_NEW_MULTIPLIER_UPGRADE_REDEEM_TIME_KEY = "New Multiplier Upgrade Redeem Time";
 
     #endregion
 

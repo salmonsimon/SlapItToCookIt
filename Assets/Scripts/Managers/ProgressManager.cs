@@ -11,10 +11,10 @@ public class ProgressManager : MonoBehaviour
 
     [Header("Currency")]
     [SerializeField] private int coins = 0;
-    public int Coins { get { return coins; } private set { coins = value; } }
+    public int Coins { get; private set; }
 
     [SerializeField] private int rubies = 100;
-    public int Rubies { get { return rubies; } private set { rubies = value; } }
+    public int Rubies { get; private set; }
 
     #endregion
 
@@ -22,24 +22,24 @@ public class ProgressManager : MonoBehaviour
 
     [Header("Upgrades")]
     [SerializeField] private int handsCount = 1;
-    public int HandsCount { get { return handsCount; } private set { handsCount = value; } }
+    public int HandsCount { get; private set; }
 
     [SerializeField] private float temperatureIncreaseMultiplier = 1.0f;
-    public float TemperatureIncreaseMultiplier { get { return temperatureIncreaseMultiplier; } private set { temperatureIncreaseMultiplier = value; } }
+    public float TemperatureIncreaseMultiplier { get; private set; }
 
     [Header("Upgrades - New Hands")]
     [SerializeField] private int handUpgradesDone = 0;
-    public int HandUpgradesDone { get { return handUpgradesDone; } }
+    public int HandUpgradesDone { get; private set; }
 
     [SerializeField] private float newHandUpgradeRedeemTime = -1f;
-    public float NewHandUpgradeRedeemTime { get { return newHandUpgradeRedeemTime; } private set { newHandUpgradeRedeemTime = value; } }
+    public float NewHandUpgradeRedeemTime { get; private set; }
 
     [Header("Upgrades - New Temperature")]
     [SerializeField] private int multiplierUpgradesDone = 0;
-    public int MultiplierUpgradesDone { get { return multiplierUpgradesDone; } }
+    public int MultiplierUpgradesDone { get; private set; }
 
     [SerializeField] private float newMultiplierUpgradeRedeemTime = -1f;
-    public float NewMultiplierUpgradeRedeemTime { get { return newMultiplierUpgradeRedeemTime; } private set { newMultiplierUpgradeRedeemTime = value; } }
+    public float NewMultiplierUpgradeRedeemTime { get; private set; }
 
     #endregion
 
@@ -47,17 +47,23 @@ public class ProgressManager : MonoBehaviour
 
     [Header("Score Record")]
     [SerializeField] private float recordTime = -1f;
-    public float RecordTime { get { return recordTime; } private set { recordTime = value; } }
+    public float RecordTime { get; private set; }
 
     [SerializeField] private int recordSlaps = -1;
-    public int RecordSlaps { get { return recordSlaps; } private set { recordSlaps = value; } }
+    public int RecordSlaps { get; private set; }
 
     #endregion
 
-    private void Awake()
+    public void UpdateProgress(string coins, string rubies, string handUpgradesDone, string newHandUpgradeRedeemTime, string multiplierUpgradesDone, string newMultiplierUpgradeRedeemTime)
     {
-        UpdateCountersAPICall();
-        UpdateRecordsAPICall();
+        Coins = int.Parse(coins);
+        Rubies = int.Parse(rubies);
+
+        HandUpgradesDone = int.Parse(handUpgradesDone);
+        NewHandUpgradeRedeemTime = float.Parse(newHandUpgradeRedeemTime);
+
+        MultiplierUpgradesDone = int.Parse(multiplierUpgradesDone);
+        NewMultiplierUpgradeRedeemTime = float.Parse(newMultiplierUpgradeRedeemTime);
     }
 
     public bool CheckIfNewRecord(float newTimePlayed, int newSlapCount)
@@ -85,6 +91,8 @@ public class ProgressManager : MonoBehaviour
         // TODO: DO API CALL TO WRITE IN SERVER
         RecordTime = newTimePlayed;
         RecordSlaps = newSlapCount;
+
+        GameManager.instance.GetPlayfabManager().WriteLeaderboard(newTimePlayed, newSlapCount);
     }
 
     public void EarnCoins(int amountEarned)
