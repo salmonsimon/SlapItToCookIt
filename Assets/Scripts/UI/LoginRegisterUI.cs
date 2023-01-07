@@ -55,12 +55,28 @@ public class LoginRegisterUI : MonoBehaviour
 
     #region Login
 
-    public void LoginButton()
+    public void LoginWithEmailButton()
     {
-        Login(loginEmailInput, loginPasswordInput);
+        LoginWithEmail(loginEmailInput, loginPasswordInput);
     }
 
-    private void Login(InputField email, InputField password)
+    public void LoginWithDeviceButton()
+    {
+        LoginWithDevice();
+    }
+
+    public void LoginWithDevice()
+    {
+        var request = new LoginWithCustomIDRequest
+        {
+            CustomId = SystemInfo.deviceUniqueIdentifier,
+            CreateAccount = true,
+        };
+
+        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnError);
+    }
+
+    private void LoginWithEmail(InputField email, InputField password)
     {
         var request = new LoginWithEmailAddressRequest
         {
