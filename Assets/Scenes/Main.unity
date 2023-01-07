@@ -905,7 +905,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &862587027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1279,6 +1279,7 @@ MonoBehaviour:
   progressManager: {fileID: 187475525}
   sfxManager: {fileID: 1876077631}
   musicManager: {fileID: 1834058039}
+  playfabManager: {fileID: 0}
   mainMenu: {fileID: 2036168305}
   pauseMenu: {fileID: 7976951904415384667}
   isOnMainMenu: 0
