@@ -12,11 +12,11 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private LevelLoader levelLoader;
     [SerializeField] private ProgressManager progressManager;
+    [SerializeField] private CurrencyManager currencyManager;
     //[SerializeField] private CinemachineShake cinemachineShake;
     //[SerializeField] private DialogueManager dialogueManager;
     [SerializeField] private SFXManager sfxManager;
     [SerializeField] private MusicManager musicManager;
-    [SerializeField] private PlayfabManager playfabManager;
 
     #region UI
 
@@ -43,11 +43,11 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             Destroy(levelLoader.gameObject);
             Destroy(progressManager.gameObject);
+            Destroy(currencyManager.gameObject);
             //Destroy(cinemachineShake.gameObject);
             //Destroy(dialogueManager.gameObject);
             Destroy(sfxManager.gameObject);
             Destroy(musicManager.gameObject);
-            Destroy(playfabManager.gameObject);
 
             Destroy(mainMenu.gameObject);
             Destroy(pauseMenu.gameObject);
@@ -77,21 +77,39 @@ public class GameManager : MonoBehaviour
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (isOnMainMenu)
+        switch (scene.name)
         {
-            mainMenu.ResetMainMenu();
-            mainMenu.gameObject.SetActive(true);
+            case Config.LOGIN_SCENE_NAME:
 
-            pauseMenu.gameObject.SetActive(false);
-        }
-        else
-        {
-            if (scene.name == Config.LOGIN_SCENE_NAME)
+                mainMenu.gameObject.SetActive(false);
                 pauseMenu.gameObject.SetActive(false);
-            else
+
+                progressManager.gameObject.SetActive(false);
+                currencyManager.gameObject.SetActive(false);
+
+                break;
+
+            case Config.MAIN_MENU_SCENE_NAME:
+
+                mainMenu.ResetMainMenu();
+                mainMenu.gameObject.SetActive(true);
+
+                pauseMenu.gameObject.SetActive(false);
+
+                progressManager.gameObject.SetActive(true);
+                currencyManager.gameObject.SetActive(true);
+
+                break;
+
+            case Config.MAIN_SCENE_NAME:
+
+                mainMenu.gameObject.SetActive(false);
                 pauseMenu.gameObject.SetActive(true);
 
-            mainMenu.gameObject.SetActive(false);
+                progressManager.gameObject.SetActive(true);
+                currencyManager.gameObject.SetActive(true);
+
+                break;
         }
 
         levelLoader.FinishTransition();
@@ -157,9 +175,9 @@ public class GameManager : MonoBehaviour
         return progressManager;
     }
 
-    public PlayfabManager GetPlayfabManager()
+    public CurrencyManager GetCurrencyManager()
     {
-        return playfabManager;
+        return currencyManager;
     }
 
     /*

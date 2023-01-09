@@ -9,6 +9,7 @@ public class ShopUI : MonoBehaviour
     #region Game Objects References
 
     private ProgressManager progressManager;
+    private CurrencyManager currencyManager;
 
     #endregion
 
@@ -76,6 +77,7 @@ public class ShopUI : MonoBehaviour
     private void Awake()
     {
         progressManager = GameManager.instance.GetProgressManager();
+        currencyManager = GameManager.instance.GetCurrencyManager();
 
         handUpgradeTable = Resources.Load(Config.HAND_UPGRADES_FILE) as UpgradeTable;
         multiplierUpgradeTable = Resources.Load(Config.MULTIPLIER_UPGRADES_FILE) as UpgradeTable;
@@ -87,7 +89,7 @@ public class ShopUI : MonoBehaviour
         {
             waitingDurationHandUpgrade -= Time.deltaTime;
 
-            if (waitingDurationHandUpgrade > 0) 
+            if (waitingDurationHandUpgrade > 0)
             {
                 waitingTimeHandButtonText.text = FloatToTimeFormat(waitingDurationHandUpgrade);
                 waitingTimeHandUpgradeFFText.text = FloatToTimeFormat(waitingDurationHandUpgrade);
@@ -134,6 +136,7 @@ public class ShopUI : MonoBehaviour
     public void DisplayProgressInShop()
     {
         progressManager.UpdateCountersAPICall();
+        currencyManager.GetVirtualCurrencies();
 
         UpdateHandUpgradeWaitingDuration();
         UpdateMultiplierUpgradeWaitingDuration();
@@ -141,8 +144,8 @@ public class ShopUI : MonoBehaviour
         DisplayHandUpgradeButtons();
         DisplaySlapMultiplierUpgradeButtons();
 
-        coinsCountText.text = progressManager.Coins.ToString();
-        rubiesCountText.text = progressManager.Rubies.ToString();
+        coinsCountText.text = currencyManager.Coins.ToString();
+        rubiesCountText.text = currencyManager.Rubies.ToString();
         handsCountText.text = progressManager.HandsCount.ToString();
         slapMultiplierText.text = "x" + progressManager.TemperatureIncreaseMultiplier.ToString();
     }
@@ -225,15 +228,21 @@ public class ShopUI : MonoBehaviour
     public void CoinBuyHandUpgrade()
     {
         progressManager.UpdateCountersAPICall();
+        currencyManager.GetVirtualCurrencies();
 
-        int coinsOwned = progressManager.Coins;
+        int coinsOwned = currencyManager.Coins;
 
         int handUpgradesDone = progressManager.HandUpgradesDone;
         int handUpgradeCoinPrice = handUpgradeTable.UpgradeInfo[handUpgradesDone].CoinPrice;
 
+        #region TO DO: CHANGE THIS FOR AN API CALL TO A CUSTOM CLOUDSCRIPT METHOD
+
+        // TO DO: HERE JUST CHANGE THE WAY OF CHECKING IF WE HAVE ENOUGH MONEY
+
+        /*
         if (coinsOwned >= handUpgradeCoinPrice)
         {
-            progressManager.PayCoins(handUpgradeCoinPrice);
+            currencyManager.SubstractCoins(handUpgradeCoinPrice);
 
             float waitingTime = handUpgradeTable.UpgradeInfo[handUpgradesDone].WaitingTimeInSeconds;
             progressManager.WriteNewHandUpgradeRedeemTimeAPICall(waitingTime);
@@ -246,20 +255,26 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
         }
+        */
+
+        #endregion
     }
 
     public void RubyBuyHandUpgrade()
     {
         progressManager.UpdateCountersAPICall();
+        currencyManager.GetVirtualCurrencies();
 
-        int rubiesOwned = progressManager.Rubies;
+        int rubiesOwned = currencyManager.Rubies;
 
         int handUpgradesDone = progressManager.HandUpgradesDone;
         int handUpgradeRubyPrice = handUpgradeTable.UpgradeInfo[handUpgradesDone].RubyPrice;
 
+        #region TO DO: CHANGE THIS IF TO BE BASED ON A CUSTOM CLOUDSCRIPT METHOD
+        /*
         if (rubiesOwned >= handUpgradeRubyPrice)
         {
-            progressManager.PayRubies(handUpgradeRubyPrice);
+            currencyManager.SubstractRubies(handUpgradeRubyPrice);
             progressManager.RedeemNewHandUpgrade();
 
             handPurchasePanel.SetActive(false);
@@ -269,11 +284,14 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
         }
+        */
+        #endregion
     }
 
     public void RubyFastForwardHandUpgrade()
     {
         progressManager.UpdateCountersAPICall();
+        currencyManager.GetVirtualCurrencies();
         UpdateHandUpgradeWaitingDuration();
 
         if (waitingDurationHandUpgrade < 0)
@@ -282,14 +300,16 @@ public class ShopUI : MonoBehaviour
             DisplayHandUpgradeButtons();
         }
 
-        int rubiesOwned = progressManager.Rubies;
+        int rubiesOwned = currencyManager.Rubies;
 
         int handUpgradesDone = progressManager.HandUpgradesDone;
         int handFastForwardRubyPrice = handUpgradeTable.UpgradeInfo[handUpgradesDone].FastForwardRubyPrice;
 
+        #region TO DO: CHANGE THIS IF TO BE CHECKED BASED ON A CUSTOM CLOUDSCRIPT METHOD
+        /*
         if (rubiesOwned >= handFastForwardRubyPrice)
         {
-            progressManager.PayRubies(handFastForwardRubyPrice);
+            currencyManager.SubstractRubies(handFastForwardRubyPrice);
             progressManager.RedeemNewHandUpgrade();
 
             progressManager.ResetNewHandUpgradeRedeemTimeAPICall();
@@ -301,6 +321,8 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
         }
+        */
+        #endregion
     }
 
     private void UpdateHandUpgradeWaitingDuration()
@@ -325,6 +347,8 @@ public class ShopUI : MonoBehaviour
 
     private bool CheckToRedeemHandUpgrade()
     {
+        // TO DO: CHANGE THIS TO BE THE RESULT OF A CLOUDSCRIPT METHOD
+
         UpdateHandUpgradeWaitingDuration();
 
         if (waitingDurationHandUpgrade == -1)
@@ -409,15 +433,18 @@ public class ShopUI : MonoBehaviour
     public void CoinBuyMultiplierUpgrade()
     {
         progressManager.UpdateCountersAPICall();
+        currencyManager.GetVirtualCurrencies();
 
-        int coinsOwned = progressManager.Coins;
+        int coinsOwned = currencyManager.Coins;
 
         int multiplierUpgradesDone = progressManager.MultiplierUpgradesDone;
         int multiplierUpgradeCoinPrice = multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].CoinPrice;
 
+        #region TO DO: DO THIS IF CHECK VIA A CLOUDSCRIPT METHOD
+        /*
         if (coinsOwned >= multiplierUpgradeCoinPrice)
         {
-            progressManager.PayCoins(multiplierUpgradeCoinPrice);
+            currencyManager.SubstractCoins(multiplierUpgradeCoinPrice);
 
             float waitingTime = multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].WaitingTimeInSeconds;
             progressManager.WriteNewMultiplierUpgradeRedeemTimeAPICall(waitingTime);
@@ -430,20 +457,25 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
         }
+        */
+        #endregion
     }
 
     public void RubyBuyMultiplierUpgrade()
     {
         progressManager.UpdateCountersAPICall();
+        currencyManager.GetVirtualCurrencies();
 
-        int rubiesOwned = progressManager.Rubies;
+        int rubiesOwned = currencyManager.Rubies;
 
         int multiplierUpgradesDone = progressManager.MultiplierUpgradesDone;
         int multiplierUpgradeRubyPrice = multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].RubyPrice;
 
+        #region TO DO: DO THIS IF CHECK VIA A CLOUDSCRIPT METHOD
+        /*
         if (rubiesOwned >= multiplierUpgradeRubyPrice)
         {
-            progressManager.PayRubies(multiplierUpgradeRubyPrice);
+            currencyManager.SubstractRubies(multiplierUpgradeRubyPrice);
             progressManager.RedeemNewMultiplierUpgrade();
 
             multiplierPurchasePanel.SetActive(false);
@@ -453,11 +485,15 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
         }
+        */
+        #endregion
     }
 
     public void RubyFastForwardMultiplierUpgrade()
     {
         progressManager.UpdateCountersAPICall();
+        currencyManager.GetVirtualCurrencies();
+
         UpdateMultiplierUpgradeWaitingDuration();
 
         if (waitingDurationMultiplierUpgrade < 0)
@@ -466,14 +502,16 @@ public class ShopUI : MonoBehaviour
             DisplaySlapMultiplierUpgradeButtons();
         }
 
-        int rubiesOwned = progressManager.Rubies;
+        int rubiesOwned = currencyManager.Rubies;
 
         int multiplierUpgradesDone = progressManager.MultiplierUpgradesDone;
         int multiplierFastForwardRubyPrice = multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].FastForwardRubyPrice;
 
+        #region TO DO: CHANGE THIS IF CHECK TO BE BASED ON A CLOUDSCRIPT METHOD
+        /*
         if (rubiesOwned >= multiplierFastForwardRubyPrice)
         {
-            progressManager.PayRubies(multiplierFastForwardRubyPrice);
+            currencyManager.SubstractRubies(multiplierFastForwardRubyPrice);
             progressManager.RedeemNewMultiplierUpgrade();
 
             progressManager.ResetNewMultiplierUpgradeRedeemTimeAPICall();
@@ -485,6 +523,8 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
         }
+        */
+        #endregion
     }
 
     private void UpdateMultiplierUpgradeWaitingDuration()
@@ -509,6 +549,8 @@ public class ShopUI : MonoBehaviour
 
     private bool CheckToRedeemMultiplierUpgrade()
     {
+        // TO DO: CHANGE THIS TO BE BASED ON A CLOUDSCRIPT METHOD
+
         UpdateMultiplierUpgradeWaitingDuration();
 
         if (waitingDurationMultiplierUpgrade == -1)

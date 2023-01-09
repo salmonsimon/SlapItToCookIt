@@ -1,5 +1,8 @@
+using PlayFab.ClientModels;
+using PlayFab;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 using static Utils;
@@ -22,6 +25,9 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private Text slapCountText;
     [SerializeField] private Text newRecordText;
     [SerializeField] private Text coinsEarnedText;
+
+    [SerializeField] private GameObject errorPanel;
+    [SerializeField] private Text errorText;
 
     #region Logic Variables
 
@@ -133,12 +139,36 @@ public class SlapManager : MonoBehaviour
         if (GameManager.instance.GetProgressManager().CheckIfNewRecord(timePlayed, slapCount))
             newRecordText.gameObject.SetActive(true);
 
-        int coinsEarned = CalculateCoinsEarned();
-        GameManager.instance.GetProgressManager().EarnCoins(coinsEarned);
+        OnCompletedeLevel();
+    }
 
-        coinsEarnedText.text = coinsEarned.ToString();
+    private void OnCompletedeLevel()
+    {
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
+        {
+            FunctionName = "OnCompletedLevel",
+            GeneratePlayStreamEvent = true
+        };
 
-        stageClearedPanel.gameObject.SetActive(true);
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnCompletedLevelResponse, OnError);
+    }
+
+    private void OnCompletedLevelResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
+            int coinsEarned = CalculateCoinsEarned();
+
+            coinsEarnedText.text = coinsEarned.ToString();
+
+            stageClearedPanel.gameObject.SetActive(true);
+        }
     }
 
     private int CalculateCoinsEarned()
@@ -206,5 +236,26 @@ public class SlapManager : MonoBehaviour
     public void ToMainMenu()
     {
         GameManager.instance.ToMainMenu();
+    }
+
+    private void OnError(PlayFabError error)
+    {
+        StartCoroutine(ShowErrorMessage(error.ErrorMessage));
+    }
+
+    public void ClearMessageText()
+    {
+        errorText.text = string.Empty;
+    }
+
+    private IEnumerator ShowErrorMessage(string message)
+    {
+        errorText.text = message;
+        errorPanel.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(3f);
+
+        errorPanel.gameObject.SetActive(false);
+        ClearMessageText();
     }
 }

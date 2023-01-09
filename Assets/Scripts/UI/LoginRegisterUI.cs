@@ -50,7 +50,7 @@ public class LoginRegisterUI : MonoBehaviour
     {
         StartCoroutine(ShowMessage("Registered, logging in..."));
 
-        ToMainMenu();
+        InitializePlayerProgressIfNeeded();
     }
 
     #endregion

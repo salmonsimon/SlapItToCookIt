@@ -739,7 +739,7 @@ Transform:
   - {fileID: 8621123481962830575}
   - {fileID: 1404789828}
   - {fileID: 1810585838}
-  - {fileID: 964088089}
+  - {fileID: 1385957284}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1043,48 +1043,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ce025066c64694b9f9e7476399ca50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &964088088
-GameObject:
+--- !u!1001 &1385957283
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 964088089}
-  - component: {fileID: 964088090}
-  m_Layer: 0
-  m_Name: Playfab Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &964088089
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 302931710}
+    m_Modifications:
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 958.8241
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 538.1785
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.43372834
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096719, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_Name
+      value: Currency Manager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0dcc802c635ed6341afad91e93a4659f, type: 3}
+--- !u!4 &1385957284 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1385957283}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 964088088}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 958.8241, y: 538.1785, z: 0.43372834}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 302931710}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &964088090
+--- !u!114 &1385957285 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4809030966562096717, guid: 0dcc802c635ed6341afad91e93a4659f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1385957283}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 964088088}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2c868d7ab77e9147bcd5d9ac9b10c99, type: 3}
+  m_Script: {fileID: 11500000, guid: 27edbefa957ff664caae12b4079ec429, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1404789827
@@ -1293,9 +1336,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelLoader: {fileID: 841288314}
   progressManager: {fileID: 1810585839}
+  currencyManager: {fileID: 1385957285}
   sfxManager: {fileID: 450869342}
   musicManager: {fileID: 315514684}
-  playfabManager: {fileID: 964088090}
   mainMenu: {fileID: 8621123481962830581}
   pauseMenu: {fileID: 1404789829}
   isOnMainMenu: 1

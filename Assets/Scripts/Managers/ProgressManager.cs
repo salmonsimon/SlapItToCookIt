@@ -11,10 +11,10 @@ public class ProgressManager : MonoBehaviour
 
     [Header("Currency")]
     [SerializeField] private int coins = 0;
-    public int Coins { get; private set; }
+    public int Coins { get { return coins; } private set { coins = value; } }
 
     [SerializeField] private int rubies = 100;
-    public int Rubies { get; private set; }
+    public int Rubies { get { return rubies; } private set { rubies = value; } }
 
     #endregion
 
@@ -22,24 +22,24 @@ public class ProgressManager : MonoBehaviour
 
     [Header("Upgrades")]
     [SerializeField] private int handsCount = 1;
-    public int HandsCount { get; private set; }
+    public int HandsCount { get { return handsCount; } private set { handsCount = value; } }
 
     [SerializeField] private float temperatureIncreaseMultiplier = 1.0f;
-    public float TemperatureIncreaseMultiplier { get; private set; }
+    public float TemperatureIncreaseMultiplier { get { return temperatureIncreaseMultiplier; } private set { temperatureIncreaseMultiplier = value; } }
 
     [Header("Upgrades - New Hands")]
     [SerializeField] private int handUpgradesDone = 0;
-    public int HandUpgradesDone { get; private set; }
+    public int HandUpgradesDone { get { return handUpgradesDone; } private set { handUpgradesDone = value; } }
 
     [SerializeField] private float newHandUpgradeRedeemTime = -1f;
-    public float NewHandUpgradeRedeemTime { get; private set; }
+    public float NewHandUpgradeRedeemTime { get { return newHandUpgradeRedeemTime; } private set { newHandUpgradeRedeemTime = value; } }
 
     [Header("Upgrades - New Temperature")]
     [SerializeField] private int multiplierUpgradesDone = 0;
-    public int MultiplierUpgradesDone { get; private set; }
+    public int MultiplierUpgradesDone { get { return multiplierUpgradesDone; } private set { multiplierUpgradesDone = value; } }
 
     [SerializeField] private float newMultiplierUpgradeRedeemTime = -1f;
-    public float NewMultiplierUpgradeRedeemTime { get; private set; }
+    public float NewMultiplierUpgradeRedeemTime { get { return newMultiplierUpgradeRedeemTime; } private set { newMultiplierUpgradeRedeemTime = value; } }
 
     #endregion
 
@@ -47,10 +47,10 @@ public class ProgressManager : MonoBehaviour
 
     [Header("Score Record")]
     [SerializeField] private float recordTime = -1f;
-    public float RecordTime { get; private set; }
+    public float RecordTime { get { return recordTime; } private set { recordTime = value; } }
 
     [SerializeField] private int recordSlaps = -1;
-    public int RecordSlaps { get; private set; }
+    public int RecordSlaps { get { return recordSlaps; } private set { recordSlaps = value; } }
 
     #endregion
 
@@ -92,7 +92,7 @@ public class ProgressManager : MonoBehaviour
         RecordTime = newTimePlayed;
         RecordSlaps = newSlapCount;
 
-        GameManager.instance.GetPlayfabManager().WriteLeaderboard(newTimePlayed, newSlapCount);
+        //GameManager.instance.GetPlayfabManager().WriteLeaderboard(newTimePlayed, newSlapCount);
     }
 
     public void EarnCoins(int amountEarned)

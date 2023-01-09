@@ -804,6 +804,93 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 418910145}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &615791674
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 862587028}
+    m_Modifications:
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 958.8241
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 538.1785
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.43372834
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096719, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_Name
+      value: Currency Manager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0dcc802c635ed6341afad91e93a4659f, type: 3}
+--- !u!4 &615791675 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4809030966562096716, guid: 0dcc802c635ed6341afad91e93a4659f,
+    type: 3}
+  m_PrefabInstance: {fileID: 615791674}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &615791676 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4809030966562096717, guid: 0dcc802c635ed6341afad91e93a4659f,
+    type: 3}
+  m_PrefabInstance: {fileID: 615791674}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27edbefa957ff664caae12b4079ec429, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &634888830
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,6 +1024,7 @@ Transform:
   - {fileID: 7976951904415384665}
   - {fileID: 2036168304}
   - {fileID: 187475524}
+  - {fileID: 615791675}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1277,9 +1365,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelLoader: {fileID: 1211926613}
   progressManager: {fileID: 187475525}
+  currencyManager: {fileID: 615791676}
   sfxManager: {fileID: 1876077631}
   musicManager: {fileID: 1834058039}
-  playfabManager: {fileID: 0}
   mainMenu: {fileID: 2036168305}
   pauseMenu: {fileID: 7976951904415384667}
   isOnMainMenu: 0
