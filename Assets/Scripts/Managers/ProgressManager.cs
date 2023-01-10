@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEditor.UIElements;
 using UnityEngine;
 using static Upgrade;
@@ -47,6 +48,18 @@ public class ProgressManager : MonoBehaviour
         UpdateProgress();
     }
 
+    public void SetProgress(int handsCount, float temperatureIncreaseMultiplier, int recordSlaps, float recordtime)
+    {
+        HandsCount = handsCount;
+        TemperatureIncreaseMultiplier = temperatureIncreaseMultiplier;
+
+        RecordSlaps = recordSlaps;
+        RecordTime = recordtime;
+
+        if (OnProgressUpdateEnd != null)
+            OnProgressUpdateEnd();
+    }
+
     #region API Calls
 
     public void UpdateProgress()
@@ -61,37 +74,24 @@ public class ProgressManager : MonoBehaviour
     {
         var data = result.Data;
 
-        if (data.ContainsKey("Initialized"))
+        if (data.ContainsKey(Config.API_PLAYER_DATA_INITIALIZED_KEY))
         {
-            SetProgress(Int32.Parse(data["HandsCount"].Value), float.Parse(data["TemperatureIncreaseMultiplier"].Value),
-                           Int32.Parse(data["RecordSlaps"].Value), float.Parse(data["RecordTime"].Value));
+            SetProgress(Int32.Parse(data[Config.API_PLAYER_DATA_HANDS_COUNT_KEY].Value), float.Parse(data[Config.API_PLAYER_DATA_MULTIPLIER_KEY].Value),
+                           Int32.Parse(data[Config.API_PLAYER_DATA_RECORD_SLAPS_KEY].Value), float.Parse(data[Config.API_PLAYER_DATA_RECORD_TIME_KEY].Value));
         }
         else
         {
-            Debug.Log("Player not initialized");
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(Config.API_PLAYER_NOT_INITIALIZED_MSG));
         }
     }
 
     private void OnError(PlayFabError error)
     {
-        Debug.Log(error.ErrorMessage);
+        StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(error.ErrorMessage));
 
         if (OnProgressUpdateEnd != null)
             OnProgressUpdateEnd();
     }
 
     #endregion
-
-    public void SetProgress(int handsCount, float temperatureIncreaseMultiplier,
-                            int recordSlaps, float recordtime)
-    {
-        HandsCount = handsCount;
-        TemperatureIncreaseMultiplier = temperatureIncreaseMultiplier;
-
-        RecordSlaps = recordSlaps;
-        RecordTime = recordtime;
-
-        if (OnProgressUpdateEnd != null)
-            OnProgressUpdateEnd();
-    }
 }

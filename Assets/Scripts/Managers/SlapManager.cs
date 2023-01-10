@@ -53,8 +53,8 @@ public class SlapManager : MonoBehaviour
     #region Temperature UI
 
     private float fillerWidth = 0;
-    private float fillerMaxHeight = 1225f;
-    private float fillerMinHeight = 180f;
+    private float fillerMaxHeight = Config.TEMPERATURE_UI_MAX_HEIGHT;
+    private float fillerMinHeight = Config.TEMPERATURE_UI_MIN_HEIGHT;
 
     #endregion
 
@@ -143,7 +143,7 @@ public class SlapManager : MonoBehaviour
     {
         GameManager.instance.GetSFXManager().PlaySound(Config.STAGE_CLEARED_SFX);
 
-        yield return new WaitForSeconds(3.5f);
+        yield return new WaitForSeconds(Config.CONGRATULATIONS_SFX_DELAY);
 
         GameManager.instance.GetSFXManager().PlayRandomCongratulationsSound();
     }
@@ -153,8 +153,8 @@ public class SlapManager : MonoBehaviour
         handsCount = GameManager.instance.GetProgressManager().HandsCount;
         temperatureIncreaseMultiplier = GameManager.instance.GetProgressManager().TemperatureIncreaseMultiplier;
 
-        if (handsCount > 3) handsCount = 3;
-        if (temperatureIncreaseMultiplier > 2f) temperatureIncreaseMultiplier = 2f;
+        if (handsCount > Config.MAX_HAND_COUNT) handsCount = Config.MAX_HAND_COUNT;
+        if (temperatureIncreaseMultiplier > Config.MAX_MULTIPLIER_VALUE) temperatureIncreaseMultiplier = Config.MAX_MULTIPLIER_VALUE;
     }
 
     private void SpawnHands()
@@ -222,7 +222,7 @@ public class SlapManager : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
@@ -238,7 +238,7 @@ public class SlapManager : MonoBehaviour
 
     private void OnError(PlayFabError error)
     {
-        StartCoroutine(ShowErrorMessage(error.ErrorMessage));
+        StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(error.ErrorMessage));
     }
 
     public void ClearMessageText()
@@ -246,20 +246,9 @@ public class SlapManager : MonoBehaviour
         errorText.text = string.Empty;
     }
 
-    private IEnumerator ShowErrorMessage(string message)
-    {
-        errorText.text = message;
-        errorPanel.gameObject.SetActive(true);
-
-        yield return new WaitForSeconds(3f);
-
-        errorPanel.gameObject.SetActive(false);
-        ClearMessageText();
-    }
-
     private int CalculateCoinsEarned()
     {
-        return 50;
+        return Config.COMPLETED_LEVEL_REWARD;
     }
 
     #endregion

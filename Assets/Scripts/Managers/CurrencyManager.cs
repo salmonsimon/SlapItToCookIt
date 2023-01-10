@@ -37,8 +37,8 @@ public class CurrencyManager : MonoBehaviour
 
     private void OnGetUserInventorySuccess(GetUserInventoryResult result)
     {
-        Coins = result.VirtualCurrency["SC"];
-        Rubies = result.VirtualCurrency["HC"];
+        Coins = result.VirtualCurrency[Config.API_COINS_ID];
+        Rubies = result.VirtualCurrency[Config.API_RUBIES_ID];
 
         if (OnVirtualCurrenciesUpdateEnd != null)
             OnVirtualCurrenciesUpdateEnd();
@@ -48,7 +48,7 @@ public class CurrencyManager : MonoBehaviour
     {
         GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
 
-        Debug.Log("Error: " + error.ErrorMessage);
+        StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(error.ErrorMessage));
 
         if (OnVirtualCurrenciesUpdateEnd != null)
             OnVirtualCurrenciesUpdateEnd();

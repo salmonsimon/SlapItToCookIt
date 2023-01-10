@@ -179,16 +179,16 @@ public class ShopUI : MonoBehaviour
     {
         switch (progressManager.TemperatureIncreaseMultiplier)
         {
-            case 1f:
+            case Config.BASE_MULTIPLIER:
                 multiplierUpgradesDone = 0;
                 break;
-            case 1.2f:
+            case Config.MULTIPLIER_UPGRADE_1:
                 multiplierUpgradesDone = 1;
                 break;
-            case 1.5f:
+            case Config.MULTIPLIER_UPGRADE_2:
                 multiplierUpgradesDone = 2;
                 break;
-            case 2f:
+            case Config.MULTIPLIER_UPGRADE_3:
                 multiplierUpgradesDone = 3;
                 break;
         }
@@ -223,6 +223,11 @@ public class ShopUI : MonoBehaviour
             GetMultiplierUpgradesDone();
             DisplayProgressInShop();
             loadingPanel.SetActive(false);
+
+            if (updatesOnCourse < 0)
+            {
+                updatesOnCourse = 0;
+            }
         }
     }
 
@@ -234,7 +239,7 @@ public class ShopUI : MonoBehaviour
 
     private void DisplayHandUpgradeButtons()
     {
-        if (progressManager.HandsCount < 3)
+        if (progressManager.HandsCount < Config.MAX_HAND_COUNT)
         {
             if (waitingForHandUpgrade && waitingDurationHandUpgrade > 0)
             {
@@ -275,7 +280,7 @@ public class ShopUI : MonoBehaviour
     {
         int handsCount = progressManager.HandsCount;
 
-        if (handsCount < 3)
+        if (handsCount < Config.MAX_HAND_COUNT)
         {
             int handUpgradesDone = handsCount - 1;
 
@@ -296,7 +301,7 @@ public class ShopUI : MonoBehaviour
     {
         int handsCount = progressManager.HandsCount;
 
-        if (handsCount < 3)
+        if (handsCount < Config.MAX_HAND_COUNT)
         {
             int handUpgradesDone = handsCount - 1;
 
@@ -357,7 +362,8 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+
         }
         else
         {
@@ -393,7 +399,7 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
@@ -425,7 +431,7 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
@@ -460,7 +466,7 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
@@ -493,12 +499,12 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            if (!lastLog.Message.Equals("No hand upgrade on course"))
-                StartCoroutine(ShowErrorMessage(lastLog.Message));
+            if (!lastLog.Message.Equals(Config.API_HAND_ERROR_MSG))
+                StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
-            if (lastLog.Message.Equals("Got hand redeem waiting time"))
+            if (lastLog.Message.Equals(Config.API_HAND_SUCCESS_MSG_1))
             {
                 float waitingTime = float.Parse(Utils.ToDictionary(lastLog.Data)["waitingTime"]);
 
@@ -507,7 +513,7 @@ public class ShopUI : MonoBehaviour
 
                 DisplayProgressInShop();
             }
-            else if (lastLog.Message.Equals("New hand upgrade bought successfully"))
+            else if (lastLog.Message.Equals(Config.API_HAND_SUCCESS_MSG_2))
             {
                 waitingForHandUpgrade = false;
                 waitingDurationHandUpgrade = -1;
@@ -530,7 +536,7 @@ public class ShopUI : MonoBehaviour
 
     private void DisplayMultiplierUpgradeButtons()
     {
-        if (multiplierUpgradesDone < 3)
+        if (multiplierUpgradesDone < Config.MAX_MULTIPLIER_UPGRADES)
         {
             if (waitingForMultiplierUpgrade && waitingDurationMultiplierUpgrade > 0)
             {
@@ -569,7 +575,7 @@ public class ShopUI : MonoBehaviour
 
     public void DisplayMultiplierPurchasePanelIfAvailable()
     {
-        if (multiplierUpgradesDone < 3)
+        if (multiplierUpgradesDone < Config.MAX_MULTIPLIER_UPGRADES)
         {
             multiplierUpgradeCoinCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].CoinPrice).ToString();
             multiplierUpgradeRubyCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].RubyPrice).ToString();
@@ -586,7 +592,7 @@ public class ShopUI : MonoBehaviour
 
     public void DisplayMultiplierUpgradeFastForwardPanelIfAvailable()
     {
-        if (multiplierUpgradesDone < 3)
+        if (multiplierUpgradesDone < Config.MAX_MULTIPLIER_UPGRADES)
         {
             multiplierFastForwardRubyCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].FastForwardRubyPrice).ToString();
 
@@ -645,7 +651,7 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
@@ -681,7 +687,7 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
@@ -713,7 +719,7 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
@@ -748,7 +754,7 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
@@ -783,12 +789,12 @@ public class ShopUI : MonoBehaviour
 
         if (lastLog.Level == "Error")
         {
-            if (!lastLog.Message.Equals("No multiplier upgrade on course"))
-                StartCoroutine(ShowErrorMessage(lastLog.Message));
+            if (!lastLog.Message.Equals(Config.API_MULTIPLIER_ERROR_MSG))
+                StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
-            if (lastLog.Message.Equals("Got multiplier redeem waiting time"))
+            if (lastLog.Message.Equals(Config.API_MULTIPLIER_SUCCESS_MSG_1))
             {
                 float waitingTime = float.Parse(Utils.ToDictionary(lastLog.Data)["waitingTime"]);
 
@@ -797,7 +803,7 @@ public class ShopUI : MonoBehaviour
 
                 DisplayProgressInShop();
             }
-            else if (lastLog.Message.Equals("New multiplier upgrade redeemed successfully"))
+            else if (lastLog.Message.Equals(Config.API_MULTIPLIER_SUCCESS_MSG_2))
             {
                 waitingForMultiplierUpgrade = false;
                 waitingDurationMultiplierUpgrade = -1;
@@ -816,25 +822,7 @@ public class ShopUI : MonoBehaviour
 
     private void OnError(PlayFabError error)
     {
-        StartCoroutine(ShowErrorMessage(error.ErrorMessage));
-    }
-
-    public void ClearMessageText()
-    {
-        errorText.text = string.Empty;
-    }
-
-    private IEnumerator ShowErrorMessage(string message)
-    {
-        GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
-
-        errorText.text = message;
-        errorPanel.gameObject.SetActive(true);
-
-        yield return new WaitForSeconds(3f);
-
-        errorPanel.gameObject.SetActive(false);
-        ClearMessageText();
+        StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(error.ErrorMessage));
     }
 
     #endregion

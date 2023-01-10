@@ -2,6 +2,12 @@ using System.Collections.Generic;
 
 public class Config 
 {
+    #region General
+
+    public const int COMPLETED_LEVEL_REWARD = 50;
+
+    #endregion
+
     #region Scene Names
 
     public const string LOGIN_SCENE_NAME = "Login";
@@ -14,16 +20,32 @@ public class Config
 
     public const string API_TITLE_ID = "F11D5";
 
+    #region Currency
+
     public const string API_COINS_KEY = "Coins";
+    public const string API_COINS_ID = "SC";
     public const string API_RUBIES_KEY = "Rubies";
+    public const string API_RUBIES_ID = "HC";
 
-    public const string API_HAND_UPGRADES_DONE_KEY = "Hand Upgrades Done";
-    public const string API_NEW_HAND_UPGRADE_REDEEM_TIME_KEY = "New Hand Upgrade Redeem Time";
+    #endregion
 
-    public const string API_MULTIPLIER_UPGRADES_DONE_KEY = "Multiplier Upgrades Done";
-    public const string API_NEW_MULTIPLIER_UPGRADE_REDEEM_TIME_KEY = "New Multiplier Upgrade Redeem Time";
+    #region Player Data
+
+    public const string API_PLAYER_DATA_INITIALIZED_KEY = "Initialized";
+    public const string API_PLAYER_DATA_HANDS_COUNT_KEY = "HandsCount";
+    public const string API_PLAYER_DATA_MULTIPLIER_KEY = "TemperatureIncreaseMultiplier";
+    public const string API_PLAYER_DATA_RECORD_SLAPS_KEY = "RecordSlaps";
+    public const string API_PLAYER_DATA_RECORD_TIME_KEY = "RecordTime";
+
+    #endregion
+
+    #region Function Names
+
+    public const string API_INITIALIZE_PLAYER_FUNCTION_NAME = "InitializePlayerIfNeeded";
 
     public const string API_ON_COMPLETED_LEVEL_FUNCTION_NAME = "OnCompletedLevel";
+
+    #region Hand Upgrade Functions
 
     public const string API_BUY_HAND_UPGRADE_COINS_FUNCTION_NAME = "TryToBuyNextHandUpgradeWithCoins";
     public const string API_REDEEM_HAND_UPGRADE_COINS_FUNCTION_NAME = "TryToRedeemHandUpgradeBoughtWithCoins";
@@ -31,11 +53,53 @@ public class Config
     public const string API_NEXT_HAND_REDEEM_WT_FUNCTION_NAME = "TryToGetNextHandRedeemWaitingTime";
     public const string API_BUY_HAND_UPGRADE_RUBIES_FUNCTION_NAME = "TryToBuyNextHandUpgradeWithRubies";
 
+    #endregion
+
+    #region Multiplier Upgrade Functions
+
     public const string API_BUY_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME = "TryToBuyNextMultiplierUpgradeWithCoins";
     public const string API_REDEEM_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME = "TryToRedeemMultiplierUpgradeBoughtWithCoins";
     public const string API_FAST_FORWARD_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME = "TryToFastForwardNextMultiplierUpgrade";
     public const string API_NEXT_MULTIPLIER_REDEEM_WT_FUNCTION_NAME = "TryToGetNextMultiplierRedeemWaitingTime";
     public const string API_BUY_MULTIPLIER_UPGRADE_RUBIES_FUNCTION_NAME = "TryToBuyNextMultiplierUpgradeWithRubies";
+
+    #endregion
+
+    #endregion
+
+    #region Error Messages
+
+    public const string API_HAND_ERROR_MSG = "No hand upgrade on course";
+
+    public const string API_MULTIPLIER_ERROR_MSG = "No multiplier upgrade on course";
+
+    public const string API_LOGIN_INVALID_ERROR_MSG = "Invalid email address or password";
+
+    #endregion
+
+    #region Other Messages
+
+    public const string API_HAND_SUCCESS_MSG_1 = "Got hand redeem waiting time";
+    public const string API_HAND_SUCCESS_MSG_2 = "New hand upgrade bought successfully";
+
+    public const string API_MULTIPLIER_SUCCESS_MSG_1 = "Got multiplier redeem waiting time";
+    public const string API_MULTIPLIER_SUCCESS_MSG_2 = "New multiplier upgrade redeemed successfully";
+
+    public const string API_PLAYER_NOT_INITIALIZED_MSG = "Player not initialized";
+
+    public const string API_PASS_TOO_SHORT_MSG = "Password must contain at least 6 characters";
+    public const string API_REGISTERED_MSG = "Registered, logging in...";
+    public const string API_LOGIN_MSG = "logging in...";
+    public const string API_PASS_RESET_MSG = "Password reset email sent";
+
+    #endregion
+
+    #region Login / Register
+
+    public const int API_MIN_PASSWORD_LENGTH = 6;
+    public const int API_RANDOM_PASSWORD_LENGTH = 8;
+
+    #endregion
 
     #endregion
 
@@ -57,10 +121,28 @@ public class Config
 
     #endregion
 
+    #region Upgrades
+
+    public const int MAX_HAND_COUNT = 3;
+    public const int MAX_MULTIPLIER_UPGRADES = 3;
+    public const float MAX_MULTIPLIER_VALUE = 2f;
+
+    public const float BASE_MULTIPLIER = 1f;
+    public const float MULTIPLIER_UPGRADE_1 = 1.2f;
+    public const float MULTIPLIER_UPGRADE_2 = 1.5f;
+    public const float MULTIPLIER_UPGRADE_3 = 2f;
+    
+    #endregion
+
     #region UI
 
     public const string ANIMATOR_SHOW_COUNTERS = "Appear";
     public const string ANIMATOR_HIDE_COUNTERS = "Disappear";
+
+    public const float ERROR_MESSAGE_DURATION = 2f;
+
+    public const float TEMPERATURE_UI_MAX_HEIGHT = 1225f;
+    public const float TEMPERATURE_UI_MIN_HEIGHT = 180f;
 
     #endregion
 
@@ -80,6 +162,8 @@ public class Config
     public const string WRONG_SFX = "Wrong";
     public const string STAGE_CLEARED_SFX = "Stage Cleared";
     public const string OVEN_SFX = "Oven";
+
+    public const float CONGRATULATIONS_SFX_DELAY = 3.4f;
 
     #endregion
 

@@ -10,6 +10,8 @@ using PlayFab.PfEditor.Json;
 
 public class LoginRegisterUI : MonoBehaviour
 {
+    #region Game Object References
+
     [Header("Common UI")]
     [SerializeField] private Text messageText;
 
@@ -21,6 +23,8 @@ public class LoginRegisterUI : MonoBehaviour
     [SerializeField] private InputField registerEmailInput;
     [SerializeField] private InputField registerPasswordInput;
 
+    #endregion
+
     #region Register
 
     public void RegisterNewUserButton()
@@ -31,9 +35,9 @@ public class LoginRegisterUI : MonoBehaviour
 
     private void RegisterNewUser(InputField email, InputField password)
     {
-        if (password.text.Length < 6)
+        if (password.text.Length < Config.API_MIN_PASSWORD_LENGTH)
         {
-            StartCoroutine(ShowMessage("Password must contain at least 6 characters"));
+            StartCoroutine(ShowMessage(Config.API_PASS_TOO_SHORT_MSG));
         }
 
         var request = new RegisterPlayFabUserRequest
@@ -48,7 +52,7 @@ public class LoginRegisterUI : MonoBehaviour
 
     private void OnRegisterSuccess(RegisterPlayFabUserResult result)
     {
-        StartCoroutine(ShowMessage("Registered, logging in..."));
+        StartCoroutine(ShowMessage(Config.API_REGISTERED_MSG));
 
         InitializePlayerProgressIfNeeded();
     }
@@ -104,7 +108,7 @@ public class LoginRegisterUI : MonoBehaviour
 
     private void OnLoginSuccess(LoginResult result)
     {
-        StartCoroutine(ShowMessage("logging in..."));
+        StartCoroutine(ShowMessage(Config.API_LOGIN_MSG));
 
         InitializePlayerProgressIfNeeded();
     }
@@ -113,7 +117,7 @@ public class LoginRegisterUI : MonoBehaviour
     {
         var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            FunctionName = "InitializePlayerIfNeeded",
+            FunctionName = Config.API_INITIALIZE_PLAYER_FUNCTION_NAME,
             GeneratePlayStreamEvent = true
         };
 
@@ -140,7 +144,7 @@ public class LoginRegisterUI : MonoBehaviour
 
     private void CheckIfAccountExists(InputField email)
     {
-        var mockPassword = Utils.RandomString(8);
+        var mockPassword = Utils.RandomString(Config.API_RANDOM_PASSWORD_LENGTH);
 
         var request = new LoginWithEmailAddressRequest
         {
@@ -153,7 +157,7 @@ public class LoginRegisterUI : MonoBehaviour
 
     private void OnAccountExistsCheck(PlayFabError error)
     {
-        if (error.ErrorMessage == "Invalid email address or password")
+        if (error.ErrorMessage == Config.API_LOGIN_INVALID_ERROR_MSG)
         {
             ResetPassword(loginEmailInput);
         }
@@ -176,7 +180,7 @@ public class LoginRegisterUI : MonoBehaviour
 
     private void OnPasswordReset(SendAccountRecoveryEmailResult result)
     {
-        StartCoroutine(ShowMessage("Password reset email sent"));
+        StartCoroutine(ShowMessage(Config.API_PASS_RESET_MSG));
     }
 
     #endregion
@@ -204,7 +208,7 @@ public class LoginRegisterUI : MonoBehaviour
     {
         messageText.text = message;
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(Config.ERROR_MESSAGE_DURATION);
 
         ClearMessageText();
     }

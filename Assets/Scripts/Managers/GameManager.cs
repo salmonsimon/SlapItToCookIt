@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private MainMenuUI mainMenu;
     [SerializeField] private PauseUI pauseMenu;
+    [SerializeField] private ErrorUI errorUI;
 
     #endregion
 
@@ -51,6 +52,7 @@ public class GameManager : MonoBehaviour
 
             Destroy(mainMenu.gameObject);
             Destroy(pauseMenu.gameObject);
+            Destroy(errorUI.gameObject);
         }
         else
         {
@@ -150,11 +152,6 @@ public class GameManager : MonoBehaviour
         isTeleporting = value;
     }
 
-    public PauseUI GetPauseUI()
-    {
-        return pauseMenu;
-    }
-
     public SFXManager GetSFXManager()
     {
         return sfxManager;
@@ -178,6 +175,16 @@ public class GameManager : MonoBehaviour
     public CurrencyManager GetCurrencyManager()
     {
         return currencyManager;
+    }
+
+    public PauseUI GetPauseUI()
+    {
+        return pauseMenu;
+    }
+
+    public ErrorUI GetErrorUI()
+    {
+        return errorUI;
     }
 
     /*
