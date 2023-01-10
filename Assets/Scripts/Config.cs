@@ -23,6 +23,20 @@ public class Config
     public const string API_MULTIPLIER_UPGRADES_DONE_KEY = "Multiplier Upgrades Done";
     public const string API_NEW_MULTIPLIER_UPGRADE_REDEEM_TIME_KEY = "New Multiplier Upgrade Redeem Time";
 
+    public const string API_ON_COMPLETED_LEVEL_FUNCTION_NAME = "OnCompletedLevel";
+
+    public const string API_BUY_HAND_UPGRADE_COINS_FUNCTION_NAME = "TryToBuyNextHandUpgradeWithCoins";
+    public const string API_REDEEM_HAND_UPGRADE_COINS_FUNCTION_NAME = "TryToRedeemHandUpgradeBoughtWithCoins";
+    public const string API_FAST_FORWARD_HAND_UPGRADE_COINS_FUNCTION_NAME = "TryToFastForwardNextHandUpgrade";
+    public const string API_NEXT_HAND_REDEEM_WT_FUNCTION_NAME = "TryToGetNextHandRedeemWaitingTime";
+    public const string API_BUY_HAND_UPGRADE_RUBIES_FUNCTION_NAME = "TryToBuyNextHandUpgradeWithRubies";
+
+    public const string API_BUY_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME = "TryToBuyNextMultiplierUpgradeWithCoins";
+    public const string API_REDEEM_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME = "TryToRedeemMultiplierUpgradeBoughtWithCoins";
+    public const string API_FAST_FORWARD_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME = "TryToFastForwardNextMultiplierUpgrade";
+    public const string API_NEXT_MULTIPLIER_REDEEM_WT_FUNCTION_NAME = "TryToGetNextMultiplierRedeemWaitingTime";
+    public const string API_BUY_MULTIPLIER_UPGRADE_RUBIES_FUNCTION_NAME = "TryToBuyNextMultiplierUpgradeWithRubies";
+
     #endregion
 
     #region Time Delays

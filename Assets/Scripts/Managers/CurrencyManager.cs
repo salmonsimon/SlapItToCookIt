@@ -12,31 +12,45 @@ public class CurrencyManager : MonoBehaviour
     [SerializeField] private int rubies;
     public int Rubies { get { return rubies; } private set { rubies = value; } }
 
+    #region Events
+
+    public delegate void OnVirtualCurrenciesUpdateStartDelegate();
+    public event OnVirtualCurrenciesUpdateStartDelegate OnVirtualCurrenciesUpdateStart;
+
+    public delegate void OnVirtualCurrenciesUpdateEndDelegate();
+    public event OnVirtualCurrenciesUpdateEndDelegate OnVirtualCurrenciesUpdateEnd;
+
+    #endregion
+
     private void Start()
     {
         GetVirtualCurrencies();
     }
 
-    #region Get
-
     public void GetVirtualCurrencies()
     {
         PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(), OnGetUserInventorySuccess, OnError);
+
+        if (OnVirtualCurrenciesUpdateStart != null)
+            OnVirtualCurrenciesUpdateStart();
     }
 
     private void OnGetUserInventorySuccess(GetUserInventoryResult result)
     {
         Coins = result.VirtualCurrency["SC"];
         Rubies = result.VirtualCurrency["HC"];
-    }
 
-    #endregion
+        if (OnVirtualCurrenciesUpdateEnd != null)
+            OnVirtualCurrenciesUpdateEnd();
+    }
 
     private void OnError(PlayFabError error)
     {
         GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
 
         Debug.Log("Error: " + error.ErrorMessage);
-    }
 
+        if (OnVirtualCurrenciesUpdateEnd != null)
+            OnVirtualCurrenciesUpdateEnd();
+    }
 }

@@ -1110,6 +1110,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Currency Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096719, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0dcc802c635ed6341afad91e93a4659f, type: 3}
 --- !u!4 &1385957284 stripped
@@ -1593,6 +1598,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ProgressManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 7476507283769793285, guid: 54740e296af87f849b1218db13011502,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7476507283769793286, guid: 54740e296af87f849b1218db13011502,
         type: 3}

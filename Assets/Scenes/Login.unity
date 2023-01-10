@@ -898,11 +898,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3069713096442540407, guid: 0dbfc2f6bbc323745ae29bd4d3a9e33b,
-        type: 3}
-      propertyPath: wrongSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 91bce861a05473a42859fbe1c89f9dc6, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0dbfc2f6bbc323745ae29bd4d3a9e33b, type: 3}
 --- !u!4 &450869341 stripped
@@ -1711,6 +1706,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Currency Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 4809030966562096719, guid: 0dcc802c635ed6341afad91e93a4659f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0dcc802c635ed6341afad91e93a4659f, type: 3}
 --- !u!1001 &7476507284182615016
@@ -1724,6 +1724,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ProgressManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 7476507283769793285, guid: 54740e296af87f849b1218db13011502,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7476507283769793286, guid: 54740e296af87f849b1218db13011502,
         type: 3}

@@ -136,44 +136,7 @@ public class SlapManager : MonoBehaviour
         slapCountText.text = slapCount.ToString("#,##0");
         timePlayedText.text = ShowCurrentTimePlayed();
 
-        if (GameManager.instance.GetProgressManager().CheckIfNewRecord(timePlayed, slapCount))
-            newRecordText.gameObject.SetActive(true);
-
         OnCompletedeLevel();
-    }
-
-    private void OnCompletedeLevel()
-    {
-        var initializePlayerRequest = new ExecuteCloudScriptRequest()
-        {
-            FunctionName = "OnCompletedLevel",
-            GeneratePlayStreamEvent = true
-        };
-
-        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnCompletedLevelResponse, OnError);
-    }
-
-    private void OnCompletedLevelResponse(ExecuteCloudScriptResult result)
-    {
-        var lastLog = result.Logs[result.Logs.Count - 1];
-
-        if (lastLog.Level == "Error")
-        {
-            StartCoroutine(ShowErrorMessage(lastLog.Message));
-        }
-        else
-        {
-            int coinsEarned = CalculateCoinsEarned();
-
-            coinsEarnedText.text = coinsEarned.ToString();
-
-            stageClearedPanel.gameObject.SetActive(true);
-        }
-    }
-
-    private int CalculateCoinsEarned()
-    {
-        return 50;
     }
 
     private IEnumerator PlayStageClearedSounds()
@@ -187,8 +150,6 @@ public class SlapManager : MonoBehaviour
 
     private void SetUpgrades()
     {
-        GameManager.instance.GetProgressManager().UpdateCountersAPICall();
-
         handsCount = GameManager.instance.GetProgressManager().HandsCount;
         temperatureIncreaseMultiplier = GameManager.instance.GetProgressManager().TemperatureIncreaseMultiplier;
 
@@ -198,7 +159,7 @@ public class SlapManager : MonoBehaviour
 
     private void SpawnHands()
     {
-
+        // TO DO: SPAWN HANDS IN 3 DIFFERENT POSITIONS
     }
 
     private void IncreaseSlapCount(int value)
@@ -226,6 +187,8 @@ public class SlapManager : MonoBehaviour
         return FloatToTimeFormat(timePlayed);
     }
 
+    #region Buttons
+
     public void PlayGame()
     {
         GameManager.instance.SetIsOnMainMenu(false);
@@ -236,6 +199,41 @@ public class SlapManager : MonoBehaviour
     public void ToMainMenu()
     {
         GameManager.instance.ToMainMenu();
+    }
+
+    #endregion
+
+    #region API Calls
+
+    private void OnCompletedeLevel()
+    {
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
+        {
+            FunctionName = Config.API_ON_COMPLETED_LEVEL_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
+
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnCompletedLevelResponse, OnError);
+    }
+
+    private void OnCompletedLevelResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
+            int coinsEarned = CalculateCoinsEarned();
+
+            coinsEarnedText.text = coinsEarned.ToString();
+
+            stageClearedPanel.gameObject.SetActive(true);
+        }
+
+        GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
     }
 
     private void OnError(PlayFabError error)
@@ -258,4 +256,11 @@ public class SlapManager : MonoBehaviour
         errorPanel.gameObject.SetActive(false);
         ClearMessageText();
     }
+
+    private int CalculateCoinsEarned()
+    {
+        return 50;
+    }
+
+    #endregion
 }
