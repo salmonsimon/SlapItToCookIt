@@ -143,6 +143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clickSFX: {fileID: 8300000, guid: 224b4b95d5babf24f9ffc709d72f6d5b, type: 3}
   pauseSFX: {fileID: 8300000, guid: 9d35dfbe7ac41274f94a0d495315499a, type: 3}
+  wrongSFX: {fileID: 8300000, guid: 91bce861a05473a42859fbe1c89f9dc6, type: 3}
   stageClearedSFX: {fileID: 8300000, guid: 236e92d417d88df4189433f86996684e, type: 3}
   ovenSFX: {fileID: 8300000, guid: 0bff8131c115c5d449dffa1e72d1adea, type: 3}
   slapClips:

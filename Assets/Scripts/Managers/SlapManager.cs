@@ -1,5 +1,8 @@
+using PlayFab.ClientModels;
+using PlayFab;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 using static Utils;
@@ -22,6 +25,9 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private Text slapCountText;
     [SerializeField] private Text newRecordText;
     [SerializeField] private Text coinsEarnedText;
+
+    [SerializeField] private GameObject errorPanel;
+    [SerializeField] private Text errorText;
 
     #region Logic Variables
 
@@ -47,8 +53,8 @@ public class SlapManager : MonoBehaviour
     #region Temperature UI
 
     private float fillerWidth = 0;
-    private float fillerMaxHeight = 1225f;
-    private float fillerMinHeight = 180f;
+    private float fillerMaxHeight = Config.TEMPERATURE_UI_MAX_HEIGHT;
+    private float fillerMinHeight = Config.TEMPERATURE_UI_MIN_HEIGHT;
 
     #endregion
 
@@ -130,45 +136,30 @@ public class SlapManager : MonoBehaviour
         slapCountText.text = slapCount.ToString("#,##0");
         timePlayedText.text = ShowCurrentTimePlayed();
 
-        if (GameManager.instance.GetProgressManager().CheckIfNewRecord(timePlayed, slapCount))
-            newRecordText.gameObject.SetActive(true);
-
-        int coinsEarned = CalculateCoinsEarned();
-        GameManager.instance.GetProgressManager().EarnCoins(coinsEarned);
-
-        coinsEarnedText.text = coinsEarned.ToString();
-
-        stageClearedPanel.gameObject.SetActive(true);
-    }
-
-    private int CalculateCoinsEarned()
-    {
-        return 50;
+        OnCompletedeLevel();
     }
 
     private IEnumerator PlayStageClearedSounds()
     {
         GameManager.instance.GetSFXManager().PlaySound(Config.STAGE_CLEARED_SFX);
 
-        yield return new WaitForSeconds(3.5f);
+        yield return new WaitForSeconds(Config.CONGRATULATIONS_SFX_DELAY);
 
         GameManager.instance.GetSFXManager().PlayRandomCongratulationsSound();
     }
 
     private void SetUpgrades()
     {
-        GameManager.instance.GetProgressManager().UpdateCountersAPICall();
-
         handsCount = GameManager.instance.GetProgressManager().HandsCount;
         temperatureIncreaseMultiplier = GameManager.instance.GetProgressManager().TemperatureIncreaseMultiplier;
 
-        if (handsCount > 3) handsCount = 3;
-        if (temperatureIncreaseMultiplier > 2f) temperatureIncreaseMultiplier = 2f;
+        if (handsCount > Config.MAX_HAND_COUNT) handsCount = Config.MAX_HAND_COUNT;
+        if (temperatureIncreaseMultiplier > Config.MAX_MULTIPLIER_VALUE) temperatureIncreaseMultiplier = Config.MAX_MULTIPLIER_VALUE;
     }
 
     private void SpawnHands()
     {
-
+        // TO DO: SPAWN HANDS IN 3 DIFFERENT POSITIONS
     }
 
     private void IncreaseSlapCount(int value)
@@ -196,6 +187,8 @@ public class SlapManager : MonoBehaviour
         return FloatToTimeFormat(timePlayed);
     }
 
+    #region Buttons
+
     public void PlayGame()
     {
         GameManager.instance.SetIsOnMainMenu(false);
@@ -207,4 +200,56 @@ public class SlapManager : MonoBehaviour
     {
         GameManager.instance.ToMainMenu();
     }
+
+    #endregion
+
+    #region API Calls
+
+    private void OnCompletedeLevel()
+    {
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
+        {
+            FunctionName = Config.API_ON_COMPLETED_LEVEL_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
+
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnCompletedLevelResponse, OnError);
+    }
+
+    private void OnCompletedLevelResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
+            int coinsEarned = CalculateCoinsEarned();
+
+            coinsEarnedText.text = coinsEarned.ToString();
+
+            stageClearedPanel.gameObject.SetActive(true);
+        }
+
+        GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+    }
+
+    private void OnError(PlayFabError error)
+    {
+        StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(error.ErrorMessage));
+    }
+
+    public void ClearMessageText()
+    {
+        errorText.text = string.Empty;
+    }
+
+    private int CalculateCoinsEarned()
+    {
+        return Config.COMPLETED_LEVEL_REWARD;
+    }
+
+    #endregion
 }

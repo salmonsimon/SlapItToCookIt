@@ -1,14 +1,19 @@
+using PlayFab.ClientModels;
+using PlayFab;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static Utils;
+using PlayFab.Json;
+using System.Globalization;
 
 public class ShopUI : MonoBehaviour
 {
     #region Game Objects References
 
     private ProgressManager progressManager;
+    private CurrencyManager currencyManager;
 
     #endregion
 
@@ -35,6 +40,7 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private Button buyHandButton;
     [SerializeField] private Button waitHandButton;
     [SerializeField] private Text waitingTimeHandButtonText;
+    [SerializeField] private Button redeemHandButton;
     [SerializeField] private GameObject maximumHandsReachedPanel;
 
     [SerializeField] private GameObject handPurchasePanel;
@@ -53,6 +59,7 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private Button buyMultiplierButton;
     [SerializeField] private Button waitMultiplierButton;
     [SerializeField] private Text waitingTimeMultiplierButtonText;
+    [SerializeField] private Button redeemMultiplierButton;
     [SerializeField] private GameObject maximumMultiplierReachedPanel;
 
     [SerializeField] private GameObject multiplierPurchasePanel;
@@ -66,105 +73,196 @@ public class ShopUI : MonoBehaviour
 
     #endregion
 
+    #region Errors UI References
+
+    [Header("Error Management")]
+    [SerializeField] private GameObject errorPanel;
+    [SerializeField] private Text errorText;
+
+    #endregion
+
+    #region Loading UI References
+
+    [Header("Loading Screen")]
+    [SerializeField] private GameObject loadingPanel;
+
+    #endregion
+
     #region Logic Variables
+
+    private bool waitingForHandUpgrade = false;
+    private bool waitingForMultiplierUpgrade = false;
 
     private float waitingDurationHandUpgrade = -1;
     private float waitingDurationMultiplierUpgrade = -1;
+
+    private int multiplierUpgradesDone = 0;
+
+    private int updatesOnCourse = 0;
 
     #endregion
 
     private void Awake()
     {
         progressManager = GameManager.instance.GetProgressManager();
+        currencyManager = GameManager.instance.GetCurrencyManager();
 
         handUpgradeTable = Resources.Load(Config.HAND_UPGRADES_FILE) as UpgradeTable;
         multiplierUpgradeTable = Resources.Load(Config.MULTIPLIER_UPGRADES_FILE) as UpgradeTable;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        if (waitingDurationHandUpgrade > 0)
-        {
-            waitingDurationHandUpgrade -= Time.deltaTime;
-
-            if (waitingDurationHandUpgrade > 0) 
-            {
-                waitingTimeHandButtonText.text = FloatToTimeFormat(waitingDurationHandUpgrade);
-                waitingTimeHandUpgradeFFText.text = FloatToTimeFormat(waitingDurationHandUpgrade);
-            }
-            else
-            {
-                if (CheckToRedeemHandUpgrade())
-                {
-                    progressManager.RedeemNewHandUpgrade();
-                    progressManager.ResetNewHandUpgradeRedeemTimeAPICall();
-
-                    DisplayProgressInShop();
-                }
-            }
-        }
-        else
-            waitingDurationHandUpgrade = -1;
-
-
-        if (waitingDurationMultiplierUpgrade > 0)
-        {
-            waitingDurationMultiplierUpgrade -= Time.deltaTime;
-
-            if (waitingDurationMultiplierUpgrade > 0)
-            {
-                waitingTimeMultiplierButtonText.text = FloatToTimeFormat(waitingDurationMultiplierUpgrade);
-                waitingTimeMultiplierUpgradeFFText.text = FloatToTimeFormat(waitingDurationMultiplierUpgrade);
-            }
-            else
-            {
-                if (CheckToRedeemMultiplierUpgrade())
-                {
-                    progressManager.RedeemNewMultiplierUpgrade();
-                    progressManager.ResetNewMultiplierUpgradeRedeemTimeAPICall();
-
-                    DisplayProgressInShop();
-                }
-            }
-        }
-        else
-            waitingDurationMultiplierUpgrade = -1;
-    }
-
-    public void DisplayProgressInShop()
-    {
-        progressManager.UpdateCountersAPICall();
-
         UpdateHandUpgradeWaitingDuration();
         UpdateMultiplierUpgradeWaitingDuration();
 
-        DisplayHandUpgradeButtons();
-        DisplaySlapMultiplierUpgradeButtons();
+        progressManager.OnProgressUpdateStart += OnUpdateStart;
+        progressManager.OnProgressUpdateEnd += OnUpdateFinish;
 
-        coinsCountText.text = progressManager.Coins.ToString();
-        rubiesCountText.text = progressManager.Rubies.ToString();
+        currencyManager.OnVirtualCurrenciesUpdateStart += OnUpdateStart;
+        currencyManager.OnVirtualCurrenciesUpdateEnd += OnUpdateFinish;
+
+        GetMultiplierUpgradesDone();
+    }
+
+    private void OnDisable()
+    {
+        progressManager.OnProgressUpdateStart -= OnUpdateStart;
+        progressManager.OnProgressUpdateEnd -= OnUpdateFinish;
+
+        currencyManager.OnVirtualCurrenciesUpdateStart -= OnUpdateStart;
+        currencyManager.OnVirtualCurrenciesUpdateEnd -= OnUpdateFinish;
+    }
+
+    private void Update()
+    {
+        if (waitingForHandUpgrade)
+        {
+            if (waitingDurationHandUpgrade > 0)
+            {
+                waitingDurationHandUpgrade -= Time.deltaTime;
+
+                if (waitingDurationHandUpgrade > 0)
+                {
+                    waitingTimeHandButtonText.text = FloatToTimeFormat(waitingDurationHandUpgrade);
+                    waitingTimeHandUpgradeFFText.text = FloatToTimeFormat(waitingDurationHandUpgrade);
+                }
+                else
+                {
+                    DisplayHandUpgradeButtons();
+                    waitingDurationHandUpgrade = -1;
+                }
+            }
+        }
+
+        if (waitingForMultiplierUpgrade)
+        {
+            if (waitingDurationMultiplierUpgrade > 0)
+            {
+                waitingDurationMultiplierUpgrade -= Time.deltaTime;
+
+                if (waitingDurationMultiplierUpgrade > 0)
+                {
+                    waitingTimeMultiplierButtonText.text = FloatToTimeFormat(waitingDurationMultiplierUpgrade);
+                    waitingTimeMultiplierUpgradeFFText.text = FloatToTimeFormat(waitingDurationMultiplierUpgrade);
+                }
+                else
+                {
+                    DisplayMultiplierUpgradeButtons();
+                    waitingDurationHandUpgrade = -1;
+                }
+            }
+        }
+    }
+
+    private void GetMultiplierUpgradesDone()
+    {
+        switch (progressManager.TemperatureIncreaseMultiplier)
+        {
+            case Config.BASE_MULTIPLIER:
+                multiplierUpgradesDone = 0;
+                break;
+            case Config.MULTIPLIER_UPGRADE_1:
+                multiplierUpgradesDone = 1;
+                break;
+            case Config.MULTIPLIER_UPGRADE_2:
+                multiplierUpgradesDone = 2;
+                break;
+            case Config.MULTIPLIER_UPGRADE_3:
+                multiplierUpgradesDone = 3;
+                break;
+        }
+    }
+
+    #region Shop UI
+
+    public void DisplayProgressInShop()
+    {
+        DisplayHandUpgradeButtons();
+        DisplayMultiplierUpgradeButtons();
+
+        coinsCountText.text = currencyManager.Coins.ToString();
+        rubiesCountText.text = currencyManager.Rubies.ToString();
         handsCountText.text = progressManager.HandsCount.ToString();
         slapMultiplierText.text = "x" + progressManager.TemperatureIncreaseMultiplier.ToString();
     }
 
-    #region Hands Count Upgrades
+    private void OnUpdateStart()
+    {
+        updatesOnCourse++;
+
+        loadingPanel.SetActive(true);
+    }
+
+    private void OnUpdateFinish()
+    {
+        updatesOnCourse--;
+
+        if (updatesOnCourse <= 0)
+        {
+            GetMultiplierUpgradesDone();
+            DisplayProgressInShop();
+            loadingPanel.SetActive(false);
+
+            if (updatesOnCourse < 0)
+            {
+                updatesOnCourse = 0;
+            }
+        }
+    }
+
+    #endregion
+
+    #region Hand Upgrades
+
+    #region UI
 
     private void DisplayHandUpgradeButtons()
     {
-        if (progressManager.HandUpgradesDone < 2)
+        if (progressManager.HandsCount < Config.MAX_HAND_COUNT)
         {
-            if (waitingDurationHandUpgrade > 0)
+            if (waitingForHandUpgrade && waitingDurationHandUpgrade > 0)
             {
                 waitHandButton.gameObject.SetActive(true);
 
                 buyHandButton.gameObject.SetActive(false);
+                redeemHandButton.gameObject.SetActive(false);
                 maximumHandsReachedPanel.SetActive(false);
             }
-            else
+            else if (waitingForHandUpgrade && waitingDurationHandUpgrade < 0)
+            {
+                redeemHandButton.gameObject.SetActive(true);
+
+                buyHandButton.gameObject.SetActive(false);
+                waitHandButton.gameObject.SetActive(false);
+                maximumHandsReachedPanel.SetActive(false);
+            }
+            else 
             {
                 buyHandButton.gameObject.SetActive(true);
 
                 waitHandButton.gameObject.SetActive(false);
+                redeemHandButton.gameObject.SetActive(false);
                 maximumHandsReachedPanel.SetActive(false);
             }
         }
@@ -174,17 +272,17 @@ public class ShopUI : MonoBehaviour
 
             buyHandButton.gameObject.SetActive(false);
             waitHandButton.gameObject.SetActive(false);
+            redeemHandButton.gameObject.SetActive(false);
         }
     }
 
     public void DisplayHandPurchasePanelIfAvailable()
     {
-        progressManager.UpdateCountersAPICall();
         int handsCount = progressManager.HandsCount;
 
-        if (handsCount < 3)
+        if (handsCount < Config.MAX_HAND_COUNT)
         {
-            int handUpgradesDone = progressManager.HandUpgradesDone;
+            int handUpgradesDone = handsCount - 1;
 
             handUpgradeCoinCostText.text = (handUpgradeTable.UpgradeInfo[handUpgradesDone].CoinPrice).ToString();
             handUpgradeRubyCostText.text = (handUpgradeTable.UpgradeInfo[handUpgradesDone].RubyPrice).ToString();
@@ -195,19 +293,17 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
 
-            buyHandButton.gameObject.SetActive(false);
-            maximumHandsReachedPanel.gameObject.SetActive(true);
+            DisplayHandUpgradeButtons();
         }
     }
 
     public void DisplayHandUpgradeFastForwardPanelIfAvailable()
     {
-        progressManager.UpdateCountersAPICall();
         int handsCount = progressManager.HandsCount;
 
-        if (handsCount < 3)
+        if (handsCount < Config.MAX_HAND_COUNT)
         {
-            int handUpgradesDone = progressManager.HandUpgradesDone;
+            int handUpgradesDone = handsCount - 1;
 
             handFastForwardRubyCostText.text = (handUpgradeTable.UpgradeInfo[handUpgradesDone].FastForwardRubyPrice).ToString();
 
@@ -217,142 +313,253 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
 
-            waitHandButton.gameObject.SetActive(false);
-            maximumHandsReachedPanel.gameObject.SetActive(true);
+            DisplayHandUpgradeButtons();
         }
     }
 
-    public void CoinBuyHandUpgrade()
+    #endregion
+
+    #region HAND UPGRADE BUTTONS
+
+    public void CoinBuyHandUpgradeButton()
     {
-        progressManager.UpdateCountersAPICall();
+        CoinBuyHandUpgrade();
+    }
 
-        int coinsOwned = progressManager.Coins;
+    public void RubyBuyHandUpgradeButton() 
+    {
+        RubyBuyHandUpgrade();
+    }
 
-        int handUpgradesDone = progressManager.HandUpgradesDone;
-        int handUpgradeCoinPrice = handUpgradeTable.UpgradeInfo[handUpgradesDone].CoinPrice;
+    public void RubyFastForwardHandUpgradeButton()
+    {
+        RubyFastForwardHandUpgrade();
+    }
 
-        if (coinsOwned >= handUpgradeCoinPrice)
+    public void RedeemHandUpgradeButton()
+    {
+        RedeemHandUpgrade();
+    }
+
+    #endregion
+
+    #region COIN BUY HAND UPGRADE
+
+    private void CoinBuyHandUpgrade() 
+    {
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            progressManager.PayCoins(handUpgradeCoinPrice);
+            FunctionName = Config.API_BUY_HAND_UPGRADE_COINS_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
 
-            float waitingTime = handUpgradeTable.UpgradeInfo[handUpgradesDone].WaitingTimeInSeconds;
-            progressManager.WriteNewHandUpgradeRedeemTimeAPICall(waitingTime);
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnCoinBuyHandUpgradeResponse, OnError);
+    }
+
+    private void OnCoinBuyHandUpgradeResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+
+        }
+        else
+        {
+            float waitingTime = float.Parse(Utils.ToDictionary(lastLog.Data)["waitingTime"]);
+
+            waitingForHandUpgrade = true;
             waitingDurationHandUpgrade = waitingTime;
 
             handPurchasePanel.SetActive(false);
-            DisplayProgressInShop();
-        }
-        else
-        {
-            GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
+
+            GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
         }
     }
 
-    public void RubyBuyHandUpgrade()
+    #endregion
+
+    #region RUBY BUY HAND UPGRADE
+
+    private void RubyBuyHandUpgrade()
     {
-        progressManager.UpdateCountersAPICall();
-
-        int rubiesOwned = progressManager.Rubies;
-
-        int handUpgradesDone = progressManager.HandUpgradesDone;
-        int handUpgradeRubyPrice = handUpgradeTable.UpgradeInfo[handUpgradesDone].RubyPrice;
-
-        if (rubiesOwned >= handUpgradeRubyPrice)
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            progressManager.PayRubies(handUpgradeRubyPrice);
-            progressManager.RedeemNewHandUpgrade();
+            FunctionName = Config.API_BUY_HAND_UPGRADE_RUBIES_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
 
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnRubyBuyHandUpgradeResponse, OnError);
+    }
+
+    private void OnRubyBuyHandUpgradeResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
             handPurchasePanel.SetActive(false);
-            DisplayProgressInShop();
-        }
-        else
-        {
-            GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
+
+            GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+            GameManager.instance.GetProgressManager().UpdateProgress();
         }
     }
 
-    public void RubyFastForwardHandUpgrade()
+    #endregion
+
+    #region RUBY FAST FORWARD HAND UPGRADE
+
+    private void RubyFastForwardHandUpgrade()
     {
-        progressManager.UpdateCountersAPICall();
-        UpdateHandUpgradeWaitingDuration();
-
-        if (waitingDurationHandUpgrade < 0)
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            handFastForwardPanel.SetActive(false);
-            DisplayHandUpgradeButtons();
-        }
+            FunctionName = Config.API_FAST_FORWARD_HAND_UPGRADE_COINS_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
 
-        int rubiesOwned = progressManager.Rubies;
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnRubyFastForwardHandUpgradeResponse, OnError);
+    }
 
-        int handUpgradesDone = progressManager.HandUpgradesDone;
-        int handFastForwardRubyPrice = handUpgradeTable.UpgradeInfo[handUpgradesDone].FastForwardRubyPrice;
+    private void OnRubyFastForwardHandUpgradeResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
 
-        if (rubiesOwned >= handFastForwardRubyPrice)
+        if (lastLog.Level == "Error")
         {
-            progressManager.PayRubies(handFastForwardRubyPrice);
-            progressManager.RedeemNewHandUpgrade();
-
-            progressManager.ResetNewHandUpgradeRedeemTimeAPICall();
-
-            handFastForwardPanel.SetActive(false);
-            DisplayProgressInShop();
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
-            GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
+            handFastForwardPanel.SetActive(false);
+
+            waitingForHandUpgrade = false;
+            waitingDurationHandUpgrade = -1;
+
+            GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+            GameManager.instance.GetProgressManager().UpdateProgress();
         }
     }
+
+    #endregion
+
+    #region REDEEM HAND UPGRADE
+
+    private void RedeemHandUpgrade() 
+    {
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
+        {
+            FunctionName = Config.API_REDEEM_HAND_UPGRADE_COINS_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
+
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnRedeemHandUpgradeResponse, OnError);
+    }
+
+    private void OnRedeemHandUpgradeResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
+            waitingForHandUpgrade = false;
+            waitingDurationHandUpgrade = -1;
+
+            GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+            GameManager.instance.GetProgressManager().UpdateProgress();
+        }
+    }
+
+    #endregion
+
+    #region WAITING DURATION HAND UPGRADE REDEEM 
 
     private void UpdateHandUpgradeWaitingDuration()
     {
-        float currentServerTime = progressManager.GetServerTimeAPICall();
-
-        float redeemTime = progressManager.GetNewHandUpgradeRedeemTimeAPICall();
-
-        if (redeemTime < 0)
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            waitingDurationHandUpgrade = -1;
-            return;
-        }
+            FunctionName = Config.API_NEXT_HAND_REDEEM_WT_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
 
-        float newDuration = redeemTime - currentServerTime;
-
-        if (newDuration > 0)
-            waitingDurationHandUpgrade = newDuration;
-        else
-            waitingDurationHandUpgrade = -1;
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnUpdateHandUpgradeWaitingDurationResponse, OnError);
     }
 
-    private bool CheckToRedeemHandUpgrade()
+    private void OnUpdateHandUpgradeWaitingDurationResponse(ExecuteCloudScriptResult result)
     {
-        UpdateHandUpgradeWaitingDuration();
+        var lastLog = result.Logs[result.Logs.Count - 1];
 
-        if (waitingDurationHandUpgrade == -1)
-            return true;
+        if (lastLog.Level == "Error")
+        {
+            if (!lastLog.Message.Equals(Config.API_HAND_ERROR_MSG))
+                StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
         else
-            return false;
+        {
+            if (lastLog.Message.Equals(Config.API_HAND_SUCCESS_MSG_1))
+            {
+                float waitingTime = float.Parse(Utils.ToDictionary(lastLog.Data)["waitingTime"]);
+
+                waitingForHandUpgrade = true;
+                waitingDurationHandUpgrade = waitingTime;
+
+                DisplayProgressInShop();
+            }
+            else if (lastLog.Message.Equals(Config.API_HAND_SUCCESS_MSG_2))
+            {
+                waitingForHandUpgrade = false;
+                waitingDurationHandUpgrade = -1;
+
+                GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+                GameManager.instance.GetProgressManager().UpdateProgress();
+            }
+
+        }
     }
+
+    #endregion
+
 
     #endregion
 
     #region Slap Multiplier Upgrades
 
-    private void DisplaySlapMultiplierUpgradeButtons()
+    #region UI
+
+    private void DisplayMultiplierUpgradeButtons()
     {
-        if (progressManager.MultiplierUpgradesDone < 3)
+        if (multiplierUpgradesDone < Config.MAX_MULTIPLIER_UPGRADES)
         {
-            if (waitingDurationMultiplierUpgrade > 0)
+            if (waitingForMultiplierUpgrade && waitingDurationMultiplierUpgrade > 0)
             {
                 waitMultiplierButton.gameObject.SetActive(true);
 
                 buyMultiplierButton.gameObject.SetActive(false);
+                redeemMultiplierButton.gameObject.SetActive(false);
                 maximumMultiplierReachedPanel.gameObject.SetActive(false);
             }
-            else
+            else if (waitingForMultiplierUpgrade && waitingDurationMultiplierUpgrade < 0)
             {
+                redeemMultiplierButton.gameObject.SetActive(true);
+
+                buyMultiplierButton.gameObject.SetActive(false);
+                waitMultiplierButton.gameObject.SetActive(false);
+                maximumMultiplierReachedPanel.gameObject.SetActive(false);
+            }
+            else 
+            { 
                 buyMultiplierButton.gameObject.SetActive(true);
 
                 waitMultiplierButton.gameObject.SetActive(false);
+                redeemMultiplierButton.gameObject.SetActive(false);
                 maximumMultiplierReachedPanel.gameObject.SetActive(false);
             }
         }
@@ -362,15 +569,13 @@ public class ShopUI : MonoBehaviour
 
             buyMultiplierButton.gameObject.SetActive(false);
             waitMultiplierButton.gameObject.SetActive(false);
+            redeemMultiplierButton.gameObject.SetActive(false);
         }
     }
 
     public void DisplayMultiplierPurchasePanelIfAvailable()
     {
-        progressManager.UpdateCountersAPICall();
-        int multiplierUpgradesDone = progressManager.MultiplierUpgradesDone;
-
-        if (multiplierUpgradesDone < 3)
+        if (multiplierUpgradesDone < Config.MAX_MULTIPLIER_UPGRADES)
         {
             multiplierUpgradeCoinCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].CoinPrice).ToString();
             multiplierUpgradeRubyCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].RubyPrice).ToString();
@@ -381,17 +586,13 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
 
-            buyMultiplierButton.gameObject.SetActive(false);
-            maximumMultiplierReachedPanel.gameObject.SetActive(true);
+            DisplayMultiplierUpgradeButtons();
         }
     }
 
     public void DisplayMultiplierUpgradeFastForwardPanelIfAvailable()
     {
-        progressManager.UpdateCountersAPICall();
-        int multiplierUpgradesDone = progressManager.MultiplierUpgradesDone;
-
-        if (multiplierUpgradesDone < 3)
+        if (multiplierUpgradesDone < Config.MAX_MULTIPLIER_UPGRADES)
         {
             multiplierFastForwardRubyCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].FastForwardRubyPrice).ToString();
 
@@ -401,120 +602,227 @@ public class ShopUI : MonoBehaviour
         {
             GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
 
-            waitMultiplierButton.gameObject.SetActive(false);
-            maximumMultiplierReachedPanel.gameObject.SetActive(true);
+            DisplayMultiplierUpgradeButtons();
         }
     }
 
-    public void CoinBuyMultiplierUpgrade()
+    #endregion
+
+    #region MULTIPLIER UPGRADE BUTTONS
+
+    public void CoinBuyMultiplierUpgradeButton() 
     {
-        progressManager.UpdateCountersAPICall();
+        CoinBuyMultiplierUpgrade();
+    }
 
-        int coinsOwned = progressManager.Coins;
+    public void RubyBuyMultiplierUpgradeButton()
+    {
+        RubyBuyMultiplierUpgrade();
+    }
 
-        int multiplierUpgradesDone = progressManager.MultiplierUpgradesDone;
-        int multiplierUpgradeCoinPrice = multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].CoinPrice;
+    public void RubyFastForwardMultiplierUpgradeButton()
+    {
+        RubyFastForwardMultiplierUpgrade();
+    }
 
-        if (coinsOwned >= multiplierUpgradeCoinPrice)
+    public void RedeemMultiplierUpgradeButton()
+    {
+        RedeemMultiplierUpgrade();
+    }
+
+    #endregion
+
+    #region COIN BUY MULTIPLIER UPGRADE
+
+    private void CoinBuyMultiplierUpgrade()
+    {
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            progressManager.PayCoins(multiplierUpgradeCoinPrice);
+            FunctionName = Config.API_BUY_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
 
-            float waitingTime = multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].WaitingTimeInSeconds;
-            progressManager.WriteNewMultiplierUpgradeRedeemTimeAPICall(waitingTime);
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnCoinBuyMultiplierUpgradeResponse, OnError);
+    }
+
+    private void OnCoinBuyMultiplierUpgradeResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
+            float waitingTime = float.Parse(Utils.ToDictionary(lastLog.Data)["waitingTime"]);
+
+            waitingForMultiplierUpgrade = true;
             waitingDurationMultiplierUpgrade = waitingTime;
 
             multiplierPurchasePanel.SetActive(false);
-            DisplayProgressInShop();
-        }
-        else
-        {
-            GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
+
+            GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
         }
     }
 
-    public void RubyBuyMultiplierUpgrade()
+    #endregion
+
+    #region RUBY BUY MULTIPLIER UPGRADE
+
+    private void RubyBuyMultiplierUpgrade()
     {
-        progressManager.UpdateCountersAPICall();
-
-        int rubiesOwned = progressManager.Rubies;
-
-        int multiplierUpgradesDone = progressManager.MultiplierUpgradesDone;
-        int multiplierUpgradeRubyPrice = multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].RubyPrice;
-
-        if (rubiesOwned >= multiplierUpgradeRubyPrice)
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            progressManager.PayRubies(multiplierUpgradeRubyPrice);
-            progressManager.RedeemNewMultiplierUpgrade();
+            FunctionName = Config.API_BUY_MULTIPLIER_UPGRADE_RUBIES_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
 
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnRubyBuyMultiplierUpgradeResponse, OnError);
+    }
+
+    private void OnRubyBuyMultiplierUpgradeResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
             multiplierPurchasePanel.SetActive(false);
-            DisplayProgressInShop();
-        }
-        else
-        {
-            GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
+
+            GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+            GameManager.instance.GetProgressManager().UpdateProgress();
         }
     }
 
-    public void RubyFastForwardMultiplierUpgrade()
+    #endregion
+
+    #region RUBY FAST FORWARD MULTIPLIER UPGRADE
+
+    private void RubyFastForwardMultiplierUpgrade()
     {
-        progressManager.UpdateCountersAPICall();
-        UpdateMultiplierUpgradeWaitingDuration();
-
-        if (waitingDurationMultiplierUpgrade < 0)
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            multiplierFastForwardPanel.SetActive(false);
-            DisplaySlapMultiplierUpgradeButtons();
-        }
+            FunctionName = Config.API_FAST_FORWARD_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
 
-        int rubiesOwned = progressManager.Rubies;
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnRubyFastForwardMultiplierUpgradeResponse, OnError);
+    }
 
-        int multiplierUpgradesDone = progressManager.MultiplierUpgradesDone;
-        int multiplierFastForwardRubyPrice = multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].FastForwardRubyPrice;
+    private void OnRubyFastForwardMultiplierUpgradeResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
 
-        if (rubiesOwned >= multiplierFastForwardRubyPrice)
+        if (lastLog.Level == "Error")
         {
-            progressManager.PayRubies(multiplierFastForwardRubyPrice);
-            progressManager.RedeemNewMultiplierUpgrade();
-
-            progressManager.ResetNewMultiplierUpgradeRedeemTimeAPICall();
-
-            multiplierFastForwardPanel.SetActive(false);
-            DisplayProgressInShop();
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
         }
         else
         {
-            GameManager.instance.GetSFXManager().PlaySound(Config.WRONG_SFX);
+            multiplierFastForwardPanel.SetActive(false);
+
+            waitingForMultiplierUpgrade = false;
+            waitingDurationMultiplierUpgrade = -1;
+
+            GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+            GameManager.instance.GetProgressManager().UpdateProgress();
         }
     }
+
+    #endregion
+
+    #region REDEEM MULTIPLIER UPGRADE
+
+    private void RedeemMultiplierUpgrade()
+    {
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
+        {
+            FunctionName = Config.API_REDEEM_MULTIPLIER_UPGRADE_COINS_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
+
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnRedeemMultiplierUpgradeResponse, OnError);
+    }
+
+    private void OnRedeemMultiplierUpgradeResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
+            multiplierUpgradesDone++;
+
+            waitingForMultiplierUpgrade = false;
+            waitingDurationMultiplierUpgrade = -1;
+
+            GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+            GameManager.instance.GetProgressManager().UpdateProgress();
+        }
+    }
+
+    #endregion
+
+    #region WAITING DURATION MULTIPLIER UPGRADE REDEEM
 
     private void UpdateMultiplierUpgradeWaitingDuration()
     {
-        float currentServerTime = progressManager.GetServerTimeAPICall();
-
-        float redeemTime = progressManager.GetNewMultiplierUpgradeRedeemTimeAPICall();
-
-        if (redeemTime < 0)
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
         {
-            waitingDurationMultiplierUpgrade = -1;
-            return;
-        }
+            FunctionName = Config.API_NEXT_MULTIPLIER_REDEEM_WT_FUNCTION_NAME,
+            GeneratePlayStreamEvent = true
+        };
 
-        float newDuration = redeemTime - currentServerTime;
-
-        if (newDuration > 0)
-            waitingDurationMultiplierUpgrade = newDuration;
-        else
-            waitingDurationMultiplierUpgrade = -1;
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnUpdateMultiplierUpgradeWaitingDurationResponse, OnError);
     }
 
-    private bool CheckToRedeemMultiplierUpgrade()
+    private void OnUpdateMultiplierUpgradeWaitingDurationResponse(ExecuteCloudScriptResult result)
     {
-        UpdateMultiplierUpgradeWaitingDuration();
+        var lastLog = result.Logs[result.Logs.Count - 1];
 
-        if (waitingDurationMultiplierUpgrade == -1)
-            return true;
+        if (lastLog.Level == "Error")
+        {
+            if (!lastLog.Message.Equals(Config.API_MULTIPLIER_ERROR_MSG))
+                StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
         else
-            return false;
+        {
+            if (lastLog.Message.Equals(Config.API_MULTIPLIER_SUCCESS_MSG_1))
+            {
+                float waitingTime = float.Parse(Utils.ToDictionary(lastLog.Data)["waitingTime"]);
+
+                waitingForMultiplierUpgrade = true;
+                waitingDurationMultiplierUpgrade = waitingTime;
+
+                DisplayProgressInShop();
+            }
+            else if (lastLog.Message.Equals(Config.API_MULTIPLIER_SUCCESS_MSG_2))
+            {
+                waitingForMultiplierUpgrade = false;
+                waitingDurationMultiplierUpgrade = -1;
+
+                GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
+                GameManager.instance.GetProgressManager().UpdateProgress();
+            }
+        }
+    }
+
+    #endregion
+
+    #endregion
+
+    #region API COMMON
+
+    private void OnError(PlayFabError error)
+    {
+        StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(error.ErrorMessage));
     }
 
     #endregion
