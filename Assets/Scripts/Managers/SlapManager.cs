@@ -2,7 +2,6 @@ using PlayFab.ClientModels;
 using PlayFab;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 using static Utils;
@@ -15,9 +14,11 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private int slapCount = 0;
 
     [Header("Object References")]
+    [SerializeField] private GameObject tapCanvas;
     [SerializeField] private Button slapButton;
     [SerializeField] private Text temperatureText;
     [SerializeField] private Image thermometerFillerImage;
+    [SerializeField] private List<GameObject> comicImagesList;
 
     [Header("Stage Cleared References")]
     [SerializeField] private GameObject stageClearedPanel;
@@ -26,6 +27,7 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private Text newRecordText;
     [SerializeField] private Text coinsEarnedText;
 
+    [Header("Error Management")]
     [SerializeField] private GameObject errorPanel;
     [SerializeField] private Text errorText;
 
@@ -40,13 +42,15 @@ public class SlapManager : MonoBehaviour
     private bool reachedGoalTemperature = false;
     public bool ReachedGoalTemperature { get { return reachedGoalTemperature; } set { reachedGoalTemperature = value; } }
 
+    private bool hasSlapped = false;
+
 
     #endregion
 
     #region Parameters
 
-    private float temperatureIncreaseMagnitude = 1f;
-    private float temperatureLossMagnitude = .5f;
+    private float temperatureIncreaseMagnitude = .3f;
+    private float temperatureLossMagnitude = .1f;
 
     #endregion
 
@@ -77,7 +81,7 @@ public class SlapManager : MonoBehaviour
 
     private void Update()
     {
-        if (!ReachedGoalTemperature)
+        if (hasSlapped && !ReachedGoalTemperature)
         {
             if (currentTemperature > 0)
             {
@@ -104,6 +108,14 @@ public class SlapManager : MonoBehaviour
     public void OnSlap()
     {
         GameManager.instance.GetSFXManager().PlayRandomSlapClip();
+        GameManager.instance.GetCinemachineShake().ShakeCamera(Config.CAMERASHAKE_HIT_AMPLITUDE, Config.CAMERASHAKE_HIT_DURATION * 2);
+        ShowRandomComicImage();
+
+        if (!hasSlapped) 
+        { 
+            hasSlapped = true;
+            tapCanvas.SetActive(false);
+        }
 
         IncreaseSlapCount(handsCount);
 
@@ -185,6 +197,27 @@ public class SlapManager : MonoBehaviour
     public string ShowCurrentTimePlayed()
     {
         return FloatToTimeFormat(timePlayed);
+    }
+
+    private void ShowRandomComicImage()
+    {
+        bool show = Random.Range(0f, 1f) < .3f;
+
+        if(show)
+        {
+            int randomImage = Random.Range(0, comicImagesList.Count);
+
+            StartCoroutine(ShowImage(comicImagesList[randomImage], Config.CAMERASHAKE_HIT_DURATION));
+        }
+    }
+
+    private IEnumerator ShowImage(GameObject image, float duration)
+    {
+        image.SetActive(true);
+
+        yield return new WaitForSeconds(duration);
+
+        image.SetActive(false);
     }
 
     #region Buttons
