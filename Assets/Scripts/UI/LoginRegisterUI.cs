@@ -1,12 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
-using Newtonsoft.Json;
-using System.Xml.Serialization;
-using PlayFab.PfEditor.Json;
 
 public class LoginRegisterUI : MonoBehaviour
 {

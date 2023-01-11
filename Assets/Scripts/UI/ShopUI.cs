@@ -1,12 +1,8 @@
 using PlayFab.ClientModels;
 using PlayFab;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static Utils;
-using PlayFab.Json;
-using System.Globalization;
 
 public class ShopUI : MonoBehaviour
 {
@@ -70,14 +66,6 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private Text multiplierFastForwardRubyCostText;
     [SerializeField] private Text waitingTimeMultiplierUpgradeFFText;
 
-
-    #endregion
-
-    #region Errors UI References
-
-    [Header("Error Management")]
-    [SerializeField] private GameObject errorPanel;
-    [SerializeField] private Text errorText;
 
     #endregion
 
@@ -287,6 +275,7 @@ public class ShopUI : MonoBehaviour
             handUpgradeCoinCostText.text = (handUpgradeTable.UpgradeInfo[handUpgradesDone].CoinPrice).ToString();
             handUpgradeRubyCostText.text = (handUpgradeTable.UpgradeInfo[handUpgradesDone].RubyPrice).ToString();
 
+            handPurchasePanel.transform.parent.gameObject.SetActive(true);
             handPurchasePanel.SetActive(true);
         }
         else
@@ -307,6 +296,7 @@ public class ShopUI : MonoBehaviour
 
             handFastForwardRubyCostText.text = (handUpgradeTable.UpgradeInfo[handUpgradesDone].FastForwardRubyPrice).ToString();
 
+            handFastForwardPanel.transform.parent.gameObject.SetActive(true);
             handFastForwardPanel.SetActive(true);
         }
         else
@@ -580,6 +570,7 @@ public class ShopUI : MonoBehaviour
             multiplierUpgradeCoinCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].CoinPrice).ToString();
             multiplierUpgradeRubyCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].RubyPrice).ToString();
 
+            multiplierPurchasePanel.transform.parent.gameObject.SetActive(true);
             multiplierPurchasePanel.SetActive(true);
         }
         else
@@ -596,6 +587,7 @@ public class ShopUI : MonoBehaviour
         {
             multiplierFastForwardRubyCostText.text = (multiplierUpgradeTable.UpgradeInfo[multiplierUpgradesDone].FastForwardRubyPrice).ToString();
 
+            multiplierFastForwardPanel.transform.parent.gameObject.SetActive(true);
             multiplierFastForwardPanel.SetActive(true);
         }
         else

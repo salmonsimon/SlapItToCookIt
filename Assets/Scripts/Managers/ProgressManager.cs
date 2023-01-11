@@ -1,13 +1,7 @@
 using PlayFab;
 using PlayFab.ClientModels;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.PackageManager;
-using UnityEditor.UIElements;
 using UnityEngine;
-using static Upgrade;
 
 public class ProgressManager : MonoBehaviour
 {
