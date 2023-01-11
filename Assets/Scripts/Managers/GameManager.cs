@@ -13,8 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private LevelLoader levelLoader;
     [SerializeField] private ProgressManager progressManager;
     [SerializeField] private CurrencyManager currencyManager;
-    //[SerializeField] private CinemachineShake cinemachineShake;
-    //[SerializeField] private DialogueManager dialogueManager;
+    [SerializeField] private CinemachineShake cinemachineShake;
     [SerializeField] private SFXManager sfxManager;
     [SerializeField] private MusicManager musicManager;
 
@@ -45,8 +44,7 @@ public class GameManager : MonoBehaviour
             Destroy(levelLoader.gameObject);
             Destroy(progressManager.gameObject);
             Destroy(currencyManager.gameObject);
-            //Destroy(cinemachineShake.gameObject);
-            //Destroy(dialogueManager.gameObject);
+            Destroy(cinemachineShake.gameObject);
             Destroy(sfxManager.gameObject);
             Destroy(musicManager.gameObject);
 
@@ -119,8 +117,6 @@ public class GameManager : MonoBehaviour
 
     public void ToMainMenu()
     {
-        //dialogueManager.ClearDialogues();
-
         pauseMenu.ResumeGame();
 
         SetIsOnMainMenu(true);
@@ -187,19 +183,10 @@ public class GameManager : MonoBehaviour
         return errorUI;
     }
 
-    /*
-
     public CinemachineShake GetCinemachineShake()
     {
         return cinemachineShake;
     }
-
-    public DialogueManager GetDialogueManager()
-    {
-        return dialogueManager;
-    }
-
-    */
 
     #endregion
 

@@ -8,6 +8,15 @@ public class Config
 
     #endregion
 
+    #region Camera Shake
+
+    public const string SHAKE_FILE = "Cinemachine/6D Shake";
+
+    public const float CAMERASHAKE_HIT_AMPLITUDE = 4f;
+    public const float CAMERASHAKE_HIT_DURATION = .1f;
+
+    #endregion
+
     #region Scene Names
 
     public const string LOGIN_SCENE_NAME = "Login";

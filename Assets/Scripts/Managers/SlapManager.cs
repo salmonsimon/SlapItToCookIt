@@ -104,6 +104,7 @@ public class SlapManager : MonoBehaviour
     public void OnSlap()
     {
         GameManager.instance.GetSFXManager().PlayRandomSlapClip();
+        GameManager.instance.GetCinemachineShake().ShakeCamera(Config.CAMERASHAKE_HIT_AMPLITUDE, Config.CAMERASHAKE_HIT_DURATION);
 
         IncreaseSlapCount(handsCount);
 
