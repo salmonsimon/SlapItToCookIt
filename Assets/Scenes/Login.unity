@@ -753,6 +753,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 302931710}
     m_Modifications:
+    - target: {fileID: 5593310624430538327, guid: d4496018b327dfb47b7454b840c8ce37,
+        type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5593310624430538327, guid: d4496018b327dfb47b7454b840c8ce37,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5593310624430538327, guid: d4496018b327dfb47b7454b840c8ce37,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5593310624430538328, guid: d4496018b327dfb47b7454b840c8ce37,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5593310624430538328, guid: d4496018b327dfb47b7454b840c8ce37,
+        type: 3}
+      propertyPath: mainMusic
+      value: 
+      objectReference: {fileID: 8300000, guid: 4599bdd6b23fb6744a319a6a683784a2, type: 3}
     - target: {fileID: 5593310624430538329, guid: d4496018b327dfb47b7454b840c8ce37,
         type: 3}
       propertyPath: m_RootOrder
@@ -828,7 +853,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 315514682}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 908b78a32e1333b46a5f2c848d1fd86d, type: 3}
   m_Name: 

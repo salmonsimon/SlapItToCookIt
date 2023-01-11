@@ -6,6 +6,7 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 using static Utils;
+using UnityEngine.Rendering.Universal;
 
 public class SlapManager : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private Button slapButton;
     [SerializeField] private Text temperatureText;
     [SerializeField] private Image thermometerFillerImage;
+    [SerializeField] private List<GameObject> comicImagesList;
 
     [Header("Stage Cleared References")]
     [SerializeField] private GameObject stageClearedPanel;
@@ -108,7 +110,8 @@ public class SlapManager : MonoBehaviour
     public void OnSlap()
     {
         GameManager.instance.GetSFXManager().PlayRandomSlapClip();
-        GameManager.instance.GetCinemachineShake().ShakeCamera(Config.CAMERASHAKE_HIT_AMPLITUDE, Config.CAMERASHAKE_HIT_DURATION);
+        GameManager.instance.GetCinemachineShake().ShakeCamera(Config.CAMERASHAKE_HIT_AMPLITUDE, Config.CAMERASHAKE_HIT_DURATION * 2);
+        ShowRandomComicImage();
 
         if (!hasSlapped) 
         { 
@@ -196,6 +199,27 @@ public class SlapManager : MonoBehaviour
     public string ShowCurrentTimePlayed()
     {
         return FloatToTimeFormat(timePlayed);
+    }
+
+    private void ShowRandomComicImage()
+    {
+        bool show = Random.Range(0f, 1f) < .3f;
+
+        if(show)
+        {
+            int randomImage = Random.Range(0, comicImagesList.Count);
+
+            StartCoroutine(ShowImage(comicImagesList[randomImage], Config.CAMERASHAKE_HIT_DURATION));
+        }
+    }
+
+    private IEnumerator ShowImage(GameObject image, float duration)
+    {
+        image.SetActive(true);
+
+        yield return new WaitForSeconds(duration);
+
+        image.SetActive(false);
     }
 
     #region Buttons
