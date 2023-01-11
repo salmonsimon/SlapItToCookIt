@@ -15,6 +15,7 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private int slapCount = 0;
 
     [Header("Object References")]
+    [SerializeField] private GameObject tapCanvas;
     [SerializeField] private Button slapButton;
     [SerializeField] private Text temperatureText;
     [SerializeField] private Image thermometerFillerImage;
@@ -26,6 +27,7 @@ public class SlapManager : MonoBehaviour
     [SerializeField] private Text newRecordText;
     [SerializeField] private Text coinsEarnedText;
 
+    [Header("Error Management")]
     [SerializeField] private GameObject errorPanel;
     [SerializeField] private Text errorText;
 
@@ -39,6 +41,8 @@ public class SlapManager : MonoBehaviour
 
     private bool reachedGoalTemperature = false;
     public bool ReachedGoalTemperature { get { return reachedGoalTemperature; } set { reachedGoalTemperature = value; } }
+
+    private bool hasSlapped = false;
 
 
     #endregion
@@ -77,7 +81,7 @@ public class SlapManager : MonoBehaviour
 
     private void Update()
     {
-        if (!ReachedGoalTemperature)
+        if (hasSlapped && !ReachedGoalTemperature)
         {
             if (currentTemperature > 0)
             {
@@ -105,6 +109,12 @@ public class SlapManager : MonoBehaviour
     {
         GameManager.instance.GetSFXManager().PlayRandomSlapClip();
         GameManager.instance.GetCinemachineShake().ShakeCamera(Config.CAMERASHAKE_HIT_AMPLITUDE, Config.CAMERASHAKE_HIT_DURATION);
+
+        if (!hasSlapped) 
+        { 
+            hasSlapped = true;
+            tapCanvas.SetActive(false);
+        }
 
         IncreaseSlapCount(handsCount);
 

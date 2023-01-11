@@ -364,7 +364,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 27.5
+  field of view: 21.5
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -390,7 +390,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   m_LocalRotation: {x: 0.173011, y: -0.6850539, z: 0.1727093, w: 0.68625057}
-  m_LocalPosition: {x: 1.8104181, y: 0.9383278, z: 0.025916189}
+  m_LocalPosition: {x: 1.8104181, y: 0.9383278, z: 0.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1310,7 +1310,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1184505000
 Transform:
   m_ObjectHideFlags: 0
@@ -1576,7 +1576,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1804954731}
   m_LocalRotation: {x: 0.173011, y: -0.6850539, z: 0.1727093, w: 0.68625057}
-  m_LocalPosition: {x: 1.8104181, y: 0.9383278, z: 0.025916189}
+  m_LocalPosition: {x: 1.8104181, y: 0.9383278, z: 0.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1605,7 +1605,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
   m_Lens:
-    FieldOfView: 27.5
+    FieldOfView: 21.5
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -2027,7 +2027,7 @@ PrefabInstance:
     - target: {fileID: 2207445858575392710, guid: a24288dddbba9cc418c16a495665372d,
         type: 3}
       propertyPath: m_Name
-      value: Slapping Manager
+      value: Slap Manager
       objectReference: {fileID: 0}
     - target: {fileID: 2207445858575392711, guid: a24288dddbba9cc418c16a495665372d,
         type: 3}
@@ -2468,13 +2468,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
+        type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.099999994
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.099999994
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
@@ -2489,42 +2494,42 @@ PrefabInstance:
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.26572835
+      value: 0.428
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.03839317
+      value: -0.2063692
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.70810395
+      value: 0.7023323
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.69436705
+      value: -0.6812556
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.122349195
+      value: 0.005655445
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 6.635
+      value: -16.39
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -193.186
+      value: -197.54
       objectReference: {fileID: 0}
     - target: {fileID: 387102286726295512, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -91.89
+      value: -89.2
       objectReference: {fileID: 0}
     - target: {fileID: 1014598363644933474, guid: 9a85fabd68c55554f9458aa441681e0d,
         type: 3}
