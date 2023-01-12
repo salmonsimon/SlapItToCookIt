@@ -22,6 +22,8 @@ public class LeaderboardUI : MonoBehaviour
     #region Logic Variables
 
     private string displayName;
+
+    private int previousMinRankingShowed = 0;
     private int minRankingShowed = 0;
 
     #endregion
@@ -49,6 +51,7 @@ public class LeaderboardUI : MonoBehaviour
         if (minRankingShowed == 0)
             return;
 
+        previousMinRankingShowed = minRankingShowed;
         minRankingShowed -= maxRowsToShow;
 
         if (minRankingShowed < 0)
@@ -59,6 +62,7 @@ public class LeaderboardUI : MonoBehaviour
 
     public void GetLeaderboardNextBatchButton()
     {
+        previousMinRankingShowed = minRankingShowed;
         minRankingShowed += maxRowsToShow;
 
         GetLeaderboard(minRankingShowed);
@@ -138,6 +142,7 @@ public class LeaderboardUI : MonoBehaviour
         if (result.Leaderboard.Count == 0)
         {
             StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage("No more entries available in our leaderboard"));
+            minRankingShowed = previousMinRankingShowed;
 
             return;
         }
@@ -204,9 +209,6 @@ public class LeaderboardUI : MonoBehaviour
     private void OnError(PlayFabError error) 
     {
         StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(error.ErrorMessage));
-
-        leaderboardPanel.transform.parent.gameObject.SetActive(false);
-        leaderboardPanel.gameObject.SetActive(false);
     }
 
     #endregion
