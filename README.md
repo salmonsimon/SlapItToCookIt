@@ -48,13 +48,33 @@ After pressing the **Play** button, we will be redirected to the shop panel, whe
 <img src="Screenshots/shop_2.PNG" width="600">
 </picture>
 
+### Upgrade Purchase Panel
+
+When purchasing a new upgrade we have to options, pay with *Coins*, which is soft currency (money you get in game) but then you'd have to wait for the upgrade to be delivered, otherwise you can pay by *Rubies* which is hard currency (money you get by paying) which will grant you the upgrade instantly. 
+
+<picture>
+<img src="Screenshots/shop_buy.PNG" width="600">
+</picture>
+
+### Upgrade Fast Forward Panel
+
+Furthermore, we also have the ability to fast forward the delivery of an upgrade by paying a small amount of rubies.
+
+<picture>
+<img src="Screenshots/shop_fast_forward.PNG" width="600">
+</picture>
+
 ## Gameplay
+
+### Start
 
 When starting the gameplay scene you'll be shown the following:
 
 <picture>
 <img src="Screenshots/gameplay_welcome.PNG" width="600">
 </picture>
+
+### Gameplay
 
 This will prevent the time to run until we tap the screen for the first time, then starting the counters for time and slaps.
 
