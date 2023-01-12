@@ -54,6 +54,8 @@ public class Config
 
     public const string API_ON_COMPLETED_LEVEL_FUNCTION_NAME = "OnCompletedLevel";
 
+    public const string API_SET_NEW_RECORD_FUNCTION_NAME = "SetNewRecord";
+
     #region Hand Upgrade Functions
 
     public const string API_BUY_HAND_UPGRADE_COINS_FUNCTION_NAME = "TryToBuyNextHandUpgradeWithCoins";

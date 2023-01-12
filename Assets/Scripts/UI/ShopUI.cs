@@ -132,8 +132,8 @@ public class ShopUI : MonoBehaviour
 
                 if (waitingDurationHandUpgrade > 0)
                 {
-                    waitingTimeHandButtonText.text = FloatToTimeFormat(waitingDurationHandUpgrade);
-                    waitingTimeHandUpgradeFFText.text = FloatToTimeFormat(waitingDurationHandUpgrade);
+                    waitingTimeHandButtonText.text = FloatToTimeSecondsFormat(waitingDurationHandUpgrade);
+                    waitingTimeHandUpgradeFFText.text = FloatToTimeSecondsFormat(waitingDurationHandUpgrade);
                 }
                 else
                 {
@@ -151,8 +151,8 @@ public class ShopUI : MonoBehaviour
 
                 if (waitingDurationMultiplierUpgrade > 0)
                 {
-                    waitingTimeMultiplierButtonText.text = FloatToTimeFormat(waitingDurationMultiplierUpgrade);
-                    waitingTimeMultiplierUpgradeFFText.text = FloatToTimeFormat(waitingDurationMultiplierUpgrade);
+                    waitingTimeMultiplierButtonText.text = FloatToTimeSecondsFormat(waitingDurationMultiplierUpgrade);
+                    waitingTimeMultiplierUpgradeFFText.text = FloatToTimeSecondsFormat(waitingDurationMultiplierUpgrade);
                 }
                 else
                 {
@@ -180,6 +180,11 @@ public class ShopUI : MonoBehaviour
                 multiplierUpgradesDone = 3;
                 break;
         }
+    }
+
+    public void LeaderboardButton() 
+    {
+        GameManager.instance.GetLeaderboardUI().DisplayLeaderboard();
     }
 
     #region Shop UI
@@ -362,6 +367,7 @@ public class ShopUI : MonoBehaviour
             waitingForHandUpgrade = true;
             waitingDurationHandUpgrade = waitingTime;
 
+            handPurchasePanel.transform.parent.gameObject.SetActive(false);
             handPurchasePanel.SetActive(false);
 
             GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
@@ -393,6 +399,7 @@ public class ShopUI : MonoBehaviour
         }
         else
         {
+            handPurchasePanel.transform.parent.gameObject.SetActive(false);
             handPurchasePanel.SetActive(false);
 
             GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
@@ -425,6 +432,7 @@ public class ShopUI : MonoBehaviour
         }
         else
         {
+            handFastForwardPanel.transform.parent.gameObject.SetActive(false);
             handFastForwardPanel.SetActive(false);
 
             waitingForHandUpgrade = false;
@@ -652,6 +660,7 @@ public class ShopUI : MonoBehaviour
             waitingForMultiplierUpgrade = true;
             waitingDurationMultiplierUpgrade = waitingTime;
 
+            multiplierPurchasePanel.transform.parent.gameObject.SetActive(false);
             multiplierPurchasePanel.SetActive(false);
 
             GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
@@ -683,6 +692,7 @@ public class ShopUI : MonoBehaviour
         }
         else
         {
+            multiplierPurchasePanel.transform.parent.gameObject.SetActive(false);
             multiplierPurchasePanel.SetActive(false);
 
             GameManager.instance.GetCurrencyManager().GetVirtualCurrencies();
@@ -715,6 +725,7 @@ public class ShopUI : MonoBehaviour
         }
         else
         {
+            multiplierFastForwardPanel.transform.parent.gameObject.SetActive(false);
             multiplierFastForwardPanel.SetActive(false);
 
             waitingForMultiplierUpgrade = false;
