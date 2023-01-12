@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private MainMenuUI mainMenu;
     [SerializeField] private PauseUI pauseMenu;
     [SerializeField] private ErrorUI errorUI;
+    [SerializeField] private LeaderboardUI leaderboardUI;
 
     #endregion
 
@@ -51,6 +52,7 @@ public class GameManager : MonoBehaviour
             Destroy(mainMenu.gameObject);
             Destroy(pauseMenu.gameObject);
             Destroy(errorUI.gameObject);
+            Destroy(leaderboardUI.gameObject);
         }
         else
         {
@@ -87,6 +89,8 @@ public class GameManager : MonoBehaviour
                 progressManager.gameObject.SetActive(false);
                 currencyManager.gameObject.SetActive(false);
 
+                leaderboardUI.gameObject.SetActive(false);
+
                 break;
 
             case Config.MAIN_MENU_SCENE_NAME:
@@ -99,6 +103,8 @@ public class GameManager : MonoBehaviour
                 progressManager.gameObject.SetActive(true);
                 currencyManager.gameObject.SetActive(true);
 
+                leaderboardUI.gameObject.SetActive(true);
+
                 break;
 
             case Config.MAIN_SCENE_NAME:
@@ -108,6 +114,8 @@ public class GameManager : MonoBehaviour
 
                 progressManager.gameObject.SetActive(true);
                 currencyManager.gameObject.SetActive(true);
+
+                leaderboardUI.gameObject.SetActive(true);
 
                 break;
         }
@@ -173,6 +181,11 @@ public class GameManager : MonoBehaviour
         return currencyManager;
     }
 
+    public CinemachineShake GetCinemachineShake()
+    {
+        return cinemachineShake;
+    }
+
     public PauseUI GetPauseUI()
     {
         return pauseMenu;
@@ -183,9 +196,9 @@ public class GameManager : MonoBehaviour
         return errorUI;
     }
 
-    public CinemachineShake GetCinemachineShake()
+    public LeaderboardUI GetLeaderboardUI() 
     {
-        return cinemachineShake;
+        return leaderboardUI;
     }
 
     #endregion

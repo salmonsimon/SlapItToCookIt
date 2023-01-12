@@ -76,7 +76,6 @@ public class SlapManager : MonoBehaviour
         UpdateTemperatureUI();
 
         SetUpgrades();
-        SpawnHands();
     }
 
     private void Update()
@@ -149,6 +148,11 @@ public class SlapManager : MonoBehaviour
         timePlayedText.text = ShowCurrentTimePlayed();
 
         OnCompletedeLevel();
+
+        float currentRecordTime = GameManager.instance.GetProgressManager().RecordTime;
+
+        if (currentRecordTime < 0 || timePlayed < currentRecordTime)
+            SetNewRecord();
     }
 
     private IEnumerator PlayStageClearedSounds()
@@ -167,11 +171,6 @@ public class SlapManager : MonoBehaviour
 
         if (handsCount > Config.MAX_HAND_COUNT) handsCount = Config.MAX_HAND_COUNT;
         if (temperatureIncreaseMultiplier > Config.MAX_MULTIPLIER_VALUE) temperatureIncreaseMultiplier = Config.MAX_MULTIPLIER_VALUE;
-    }
-
-    private void SpawnHands()
-    {
-        // TO DO: SPAWN HANDS IN 3 DIFFERENT POSITIONS
     }
 
     private void IncreaseSlapCount(int value)
@@ -196,7 +195,7 @@ public class SlapManager : MonoBehaviour
 
     public string ShowCurrentTimePlayed()
     {
-        return FloatToTimeFormat(timePlayed);
+        return FloatToTimeMillisecondsFormat(timePlayed);
     }
 
     private void ShowRandomComicImage()
@@ -234,9 +233,44 @@ public class SlapManager : MonoBehaviour
         GameManager.instance.ToMainMenu();
     }
 
+    public void LeaderboardButton()
+    {
+        GameManager.instance.GetLeaderboardUI().DisplayLeaderboard();
+    }
+
     #endregion
 
     #region API Calls
+
+    private void SetNewRecord()
+    {
+        var recordData = new { RecordSlaps = slapCount, RecordTime = timePlayed };
+
+        var initializePlayerRequest = new ExecuteCloudScriptRequest()
+        {
+            FunctionName = Config.API_SET_NEW_RECORD_FUNCTION_NAME,
+            FunctionParameter = recordData,
+            GeneratePlayStreamEvent = true
+        };
+
+        PlayFabClientAPI.ExecuteCloudScript(initializePlayerRequest, OnSetNewRecordResponse, OnError);
+    }
+
+    private void OnSetNewRecordResponse(ExecuteCloudScriptResult result)
+    {
+        var lastLog = result.Logs[result.Logs.Count - 1];
+
+        if (lastLog.Level == "Error")
+        {
+            StartCoroutine(GameManager.instance.GetErrorUI().ShowErrorMessage(lastLog.Message));
+        }
+        else
+        {
+            newRecordText.gameObject.SetActive(true);
+        }
+
+        GameManager.instance.GetProgressManager().UpdateProgress();
+    }
 
     private void OnCompletedeLevel()
     {
