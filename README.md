@@ -34,7 +34,7 @@ If *Guest Login* is pressed you'll be sent to the next scene, which has the main
 <img src="Screenshots/main_menu_welcome.PNG" width="600">
 </picture>
 
-After login we are welcomed with these three options: **Play** which will lead us to the shop UI, **Settings** which let us configure the music and sound effects volume ([see Settings](./Readme.md##Settings)) and finally the **Quit** button, which will shut down the application.
+After login we are welcomed with these three options: **Play** which will lead us to the shop UI, **Settings** which let us configure the music and sound effects volume (see Settings) and finally the **Quit** button, which will shut down the application.
 
 ### Shop UI
 
