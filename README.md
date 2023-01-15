@@ -6,6 +6,10 @@ Slap it to cook it is a super casual clicker game made in Unity3D and using Play
 
 ### [Consider playing it in itch.io - Sacred Forest](https://salmonsimon.itch.io/slap-it-to-cook-it)
 
+## Playfab
+
+Logins, registering, data save and leaderboard are all implemented using the *Playfab* service. Using this service we provide a safe way of storing our player's data without major risks of cheating. All methods used for buying upgrades, getting stage clearing rewards and so on are programmed as cloudscript functions which will check with the data saved in Playfab that the requirements for each one are met.
+
 ## Login Menu
 
 Starting the game, we will be received by three options, login for the ones who already have a created account, register for those who are playing for the first time and want to create a new account and guest login, which will use the device ID as the account identifier.
